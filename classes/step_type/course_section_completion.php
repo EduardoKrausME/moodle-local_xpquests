@@ -159,9 +159,9 @@ class course_section_completion extends base implements event_step_type_interfac
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int              $userid,
-        stdClass         $step,
-        stdClass         $progress
+        int $userid,
+        stdClass $step,
+        stdClass $progress
     ): bool {
         return $this->supports_event($event)
             && (int)$event->relateduserid === $userid

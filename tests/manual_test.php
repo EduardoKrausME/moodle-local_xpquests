@@ -31,7 +31,7 @@ use required_capability_exception;
 /**
  * Manual tests.
  *
- * @covers api
+ * @covers \local_xpquests\api
  */
 final class manual_test extends advanced_testcase {
     /**

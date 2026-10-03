@@ -85,9 +85,9 @@ class activity_completion extends base implements event_step_type_interface {
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int              $userid,
-        stdClass         $step,
-        stdClass         $progress
+        int $userid,
+        stdClass $step,
+        stdClass $progress
     ): bool {
         $config = $this->config($step);
         return $this->supports_event($event)

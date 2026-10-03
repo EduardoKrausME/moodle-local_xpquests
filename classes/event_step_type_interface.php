@@ -47,8 +47,8 @@ interface event_step_type_interface extends step_type_interface {
      * Is completed by event.
      */
     public function is_completed_by_event(
-        base     $event,
-        int      $userid,
+        base $event,
+        int $userid,
         stdClass $step,
         stdClass $progress
     ): bool;

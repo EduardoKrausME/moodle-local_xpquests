@@ -222,10 +222,10 @@ final class progress_test extends advanced_testcase {
      */
     private function create_step(
         stdClass $quest,
-        string   $type,
-        int      $sortorder = 10,
-        int      $optional = 0,
-        array    $config = []
+        string $type,
+        int $sortorder = 10,
+        int $optional = 0,
+        array $config = []
     ): stdClass {
         global $DB;
         $now = time();

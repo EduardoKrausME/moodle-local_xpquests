@@ -90,9 +90,9 @@ class assignment_submission extends base implements event_step_type_interface {
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int              $userid,
-        stdClass         $step,
-        stdClass         $progress
+        int $userid,
+        stdClass $step,
+        stdClass $progress
     ): bool {
         $config = $this->config($step);
         $eventuserid = !empty($event->relateduserid) ? (int)$event->relateduserid : (int)$event->userid;

@@ -48,7 +48,7 @@ class reward_manager {
      * Create a new instance.
      */
     public function __construct(
-        ?xp_provider_interface     $xp = null,
+        ?xp_provider_interface $xp = null,
         ?credit_provider_interface $credits = null
     ) {
         $this->xp = $xp ?: new personalxp_provider();

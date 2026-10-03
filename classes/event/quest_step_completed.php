@@ -50,7 +50,7 @@ class quest_step_completed extends base {
         stdClass $quest,
         stdClass $step,
         stdClass $progress,
-        int      $stepprogressid
+        int $stepprogressid
     ): self {
         return self::create([
             'context' => context_course::instance($quest->courseid),

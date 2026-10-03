@@ -49,7 +49,7 @@ class progress_manager {
      * Create a new instance.
      */
     public function __construct(
-        ?reward_manager        $rewards = null,
+        ?reward_manager $rewards = null,
         ?xp_provider_interface $xp = null
     ) {
         $this->xp = $xp ?: new personalxp_provider();
@@ -183,7 +183,7 @@ class progress_manager {
         stdClass $quest,
         stdClass $step,
         stdClass $progress,
-        ?int     $completedat = null
+        ?int $completedat = null
     ): bool {
         global $DB;
         if ($progress->status !== 'inprogress') {
