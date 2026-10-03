@@ -42,7 +42,7 @@ foreach ($records as $quest) {
         'id' => $quest->id,
         'name' => format_string($quest->name),
         'enabled' => !empty($quest->enabled),
-        'mode' => $quest->sequential ? get_string('mode_sequential', 'local_xpquests') : get_string('mode_anyorder', 'local_xpquests'),
+        'mode' => $quest->sequential\n            ? get_string('mode_sequential', 'local_xpquests')\n            : get_string('mode_anyorder', 'local_xpquests'),
         'steps' => $DB->count_records('local_xpquests_steps', ['questid' => $quest->id]),
         'rewardxp' => (int)$quest->rewardxp,
         'rewardcredits' => (int)$quest->rewardcredits,

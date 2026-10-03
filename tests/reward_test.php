@@ -81,7 +81,7 @@ final class reward_test extends \advanced_testcase {
         $this->assertEquals(1, $xp->awards);
         $this->assertEquals(1, $credits->awards);
         $this->assertEquals(2, $DB->count_records('local_xpquests_rewards', ['progressid' => $progress->id]));
-        $this->assertEquals(2, $DB->count_records('local_xpquests_rewards', ['progressid' => $progress->id, 'status' => 'delivered']));
+        $this->assertEquals(2, $DB->count_records('local_xpquests_rewards', [\n            'progressid' => $progress->id,\n            'status' => 'delivered',\n        ]));
     }
 }
 
