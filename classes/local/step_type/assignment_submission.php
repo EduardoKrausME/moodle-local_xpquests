@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/local/step_type/assignment_submission.php for local_xpquests.
@@ -24,19 +24,30 @@
 
 namespace local_xpquests\local\step_type;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Assignment submission.
+ */
 class assignment_submission extends base implements \local_xpquests\event_step_type_interface {
+    /**
+     * Get name.
+     */
     public function get_name(): string {
         return get_string('steptype_assignment_submission', 'local_xpquests');
     }
 
+    /**
+     * Validate configuration.
+     */
     public function validate_configuration(array $config, int $courseid): array {
         $cmid = $this->require_cmid($config, $courseid);
         get_coursemodule_from_id('assign', $cmid, $courseid, false, MUST_EXIST);
         return ['cmid' => $cmid];
     }
 
+    /**
+     * Is completed.
+     */
     public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
         global $DB;
         $config = $this->config($step);
@@ -53,16 +64,25 @@ class assignment_submission extends base implements \local_xpquests\event_step_t
             ]);
     }
 
+    /**
+     * Supports event.
+     */
     public function supports_event(\core\event\base $event): bool {
         return $event instanceof \mod_assign\event\assessable_submitted;
     }
 
+    /**
+     * Matches event.
+     */
     public function matches_event(\core\event\base $event, \stdClass $step): bool {
         $config = $this->config($step);
         return $this->supports_event($event)
             && (int)$event->contextinstanceid === (int)($config['cmid'] ?? 0);
     }
 
+    /**
+     * Is completed by event.
+     */
     public function is_completed_by_event(
         \core\event\base $event,
         int $userid,
@@ -77,6 +97,9 @@ class assignment_submission extends base implements \local_xpquests\event_step_t
             && $this->is_completed($userid, $step, $progress);
     }
 
+    /**
+     * Get description.
+     */
     public function get_description(\stdClass $step): string {
         $config = $this->config($step);
         try {

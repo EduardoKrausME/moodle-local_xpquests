@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/privacy/provider.php for local_xpquests.
@@ -24,7 +24,6 @@
 
 namespace local_xpquests\privacy;
 
-defined('MOODLE_INTERNAL') || die();
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
@@ -34,11 +33,17 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
+/**
+ * Provider.
+ */
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_user_data_provider,
     \core_privacy\local\request\core_userlist_provider {
 
+    /**
+     * Get metadata.
+     */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table('local_xpquests_progress', [
             'userid' => 'privacy:metadata:progress:userid',
@@ -61,6 +66,9 @@ class provider implements
         return $collection;
     }
 
+    /**
+     * Get contexts for userid.
+     */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $sql = "SELECT DISTINCT ctx.id
                   FROM {context} ctx
@@ -72,6 +80,9 @@ class provider implements
         return $contextlist;
     }
 
+    /**
+     * Export user data.
+     */
     public static function export_user_data(approved_contextlist $contextlist): void {
         global $DB;
         $userid = $contextlist->get_user()->id;
@@ -125,6 +136,9 @@ class provider implements
         }
     }
 
+    /**
+     * Delete data for all users in context.
+     */
     public static function delete_data_for_all_users_in_context(\context $context): void {
         global $DB;
         if (!$context instanceof \context_course) {
@@ -136,6 +150,9 @@ class provider implements
         self::delete_by_questids($questids, null);
     }
 
+    /**
+     * Delete data for user.
+     */
     public static function delete_data_for_user(approved_contextlist $contextlist): void {
         global $DB;
         $userid = $contextlist->get_user()->id;
@@ -150,6 +167,9 @@ class provider implements
         }
     }
 
+    /**
+     * Get users in context.
+     */
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
         if (!$context instanceof \context_course) {
@@ -162,6 +182,9 @@ class provider implements
         $userlist->add_from_sql('userid', $sql, ['courseid' => $context->instanceid]);
     }
 
+    /**
+     * Delete data for users.
+     */
     public static function delete_data_for_users(approved_userlist $userlist): void {
         global $DB;
         $context = $userlist->get_context();
@@ -176,6 +199,9 @@ class provider implements
         }
     }
 
+    /**
+     * Delete by questids.
+     */
     private static function delete_by_questids(array $questids, ?int $userid): void {
         global $DB;
         if (!$questids) {

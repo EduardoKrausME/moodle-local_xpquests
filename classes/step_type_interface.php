@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/step_type_interface.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Step type interface.
+ */
 interface step_type_interface {
+    /**
+     * Get name.
+     */
     public function get_name(): string;
 
     /**
@@ -38,12 +43,20 @@ interface step_type_interface {
      */
     public function validate_configuration(array $config, int $courseid): array;
 
+    /**
+     * Is completed.
+     */
     public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool;
 
     /**
+     * Get progress.
+     *
      * @return array{current:float,target:float,completed:bool}
      */
     public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array;
 
+    /**
+     * Get description.
+     */
     public function get_description(\stdClass $step): string;
 }

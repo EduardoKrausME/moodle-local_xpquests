@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/event_step_type_interface.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Event step type interface.
+ */
 interface event_step_type_interface extends step_type_interface {
+    /**
+     * Supports event.
+     */
     public function supports_event(\core\event\base $event): bool;
 
     /**
@@ -35,6 +40,9 @@ interface event_step_type_interface extends step_type_interface {
      */
     public function matches_event(\core\event\base $event, \stdClass $step): bool;
 
+    /**
+     * Is completed by event.
+     */
     public function is_completed_by_event(
         \core\event\base $event,
         int $userid,

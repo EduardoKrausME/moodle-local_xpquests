@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * tests/progress_test.php for local_xpquests.
@@ -24,12 +24,29 @@
 
 namespace local_xpquests;
 
-defined('MOODLE_INTERNAL') || die();
 
+
+// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses -- Test doubles share this testcase file.
+/**
+ * Progress tests.
+ */
 final class progress_test extends \advanced_testcase {
+    /**
+     * Course.
+     *
+     * @var mixed
+     */
     private $course;
+    /**
+     * Student.
+     *
+     * @var mixed
+     */
     private $student;
 
+    /**
+     * SetUp.
+     */
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest(true);
@@ -38,6 +55,9 @@ final class progress_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($this->student->id, $this->course->id, 'student');
     }
 
+    /**
+     * Test sequential order is enforced.
+     */
     public function test_sequential_order_is_enforced(): void {
         global $DB;
         $quest = $this->create_quest(['sequential' => 1]);
@@ -53,6 +73,9 @@ final class progress_test extends \advanced_testcase {
         $this->assertEquals('completed', $DB->get_field('local_xpquests_progress', 'status', ['id' => $progress->id]));
     }
 
+    /**
+     * Test any order allows later step first.
+     */
     public function test_any_order_allows_later_step_first(): void {
         $quest = $this->create_quest(['sequential' => 0]);
         $this->create_step($quest, 'manual', 10);
@@ -62,6 +85,9 @@ final class progress_test extends \advanced_testcase {
         $this->assertTrue($manager->mark_step_completed($quest, $second, $progress));
     }
 
+    /**
+     * Test optional step does not block completion.
+     */
     public function test_optional_step_does_not_block_completion(): void {
         global $DB;
         $quest = $this->create_quest(['sequential' => 1]);
@@ -73,6 +99,9 @@ final class progress_test extends \advanced_testcase {
         $this->assertEquals('completed', $DB->get_field('local_xpquests_progress', 'status', ['id' => $progress->id]));
     }
 
+    /**
+     * Test removed activity remains incomplete without fatal error.
+     */
     public function test_removed_activity_remains_incomplete_without_fatal_error(): void {
         $quest = $this->create_quest();
         $step = $this->create_step($quest, 'activity_completion', 10, 0, ['cmid' => 999999]);
@@ -82,6 +111,9 @@ final class progress_test extends \advanced_testcase {
         $this->assertSame(get_string('step_activity_missing', 'local_xpquests'), $type->get_description($step));
     }
 
+    /**
+     * Test duplicate step completion is idempotent.
+     */
     public function test_duplicate_step_completion_is_idempotent(): void {
         global $DB;
         $quest = $this->create_quest();
@@ -96,6 +128,9 @@ final class progress_test extends \advanced_testcase {
         ]));
     }
 
+    /**
+     * Test repeatable quest creates separate runs.
+     */
     public function test_repeatable_quest_creates_separate_runs(): void {
         $quest = $this->create_quest(['repeatable' => 1, 'maxcompletions' => 2]);
         $step = $this->create_step($quest, 'manual');
@@ -107,6 +142,9 @@ final class progress_test extends \advanced_testcase {
         $this->assertEquals(2, $run2->runnumber);
     }
 
+    /**
+     * Test closed period cannot start and active run expires.
+     */
     public function test_closed_period_cannot_start_and_active_run_expires(): void {
         global $DB;
         $quest = $this->create_quest(['timeend' => time() - 100]);
@@ -130,6 +168,9 @@ final class progress_test extends \advanced_testcase {
         $this->assertEquals('expired', $DB->get_field('local_xpquests_progress', 'status', ['id' => $progress->id]));
     }
 
+    /**
+     * Manager.
+     */
     private function manager(): \local_xpquests\service\progress_manager {
         $xp = new fake_xp_provider();
         $credits = new fake_credit_provider();
@@ -137,6 +178,9 @@ final class progress_test extends \advanced_testcase {
         return new \local_xpquests\service\progress_manager($rewards, $xp);
     }
 
+    /**
+     * Create quest.
+     */
     private function create_quest(array $overrides = []): \stdClass {
         global $DB;
         $now = time();
@@ -162,6 +206,9 @@ final class progress_test extends \advanced_testcase {
         return $quest;
     }
 
+    /**
+     * Create step.
+     */
     private function create_step(
         \stdClass $quest,
         string $type,
@@ -186,20 +233,58 @@ final class progress_test extends \advanced_testcase {
     }
 }
 
+/**
+ * Fake xp provider.
+ */
 class fake_xp_provider implements \local_xpquests\integration\xp_provider_interface {
+    /**
+     * Awards.
+     *
+     * @var mixed
+     */
     public $awards = 0;
+    /**
+     * Total.
+     *
+     * @var mixed
+     */
     public $total = 0;
+    /**
+     * Award.
+     */
     public function award(int $userid, int $courseid, int $amount, string $reference): void {
         $this->awards++;
         $this->total += $amount;
     }
+    /**
+     * Get total.
+     */
     public function get_total(int $userid, int $courseid): int {
         return $this->total;
     }
 }
 
+/**
+ * Fake credit provider.
+ */
 class fake_credit_provider implements \local_xpquests\integration\credit_provider_interface {
+    /**
+     * Awards.
+     *
+     * @var mixed
+     */
     public $awards = 0;
-    public function is_available(): bool { return true; }
-    public function add(int $userid, int $courseid, int $amount, string $reference): void { $this->awards++; }
+    /**
+     * Is available.
+     */
+    public function is_available(): bool {
+        return true;
+    }
+    /**
+     * Add.
+     */
+    public function add(int $userid, int $courseid, int $amount, string $reference): void {
+        $this->awards++;
+    }
 }
+// phpcs:enable PSR1.Classes.ClassDeclaration.MultipleClasses

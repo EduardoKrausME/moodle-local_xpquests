@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/service/reward_manager.php for local_xpquests.
@@ -24,14 +24,19 @@
 
 namespace local_xpquests\service;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Reward manager.
+ */
 class reward_manager {
     /** @var \local_xpquests\integration\xp_provider_interface */
     private $xp;
     /** @var \local_xpquests\integration\credit_provider_interface */
     private $credits;
 
+    /**
+     * Create a new instance.
+     */
     public function __construct(
         ?\local_xpquests\integration\xp_provider_interface $xp = null,
         ?\local_xpquests\integration\credit_provider_interface $credits = null
@@ -40,6 +45,9 @@ class reward_manager {
         $this->credits = $credits ?: new \local_xpquests\integration\rewardshop_provider();
     }
 
+    /**
+     * Deliver.
+     */
     public function deliver(\stdClass $quest, \stdClass $progress): void {
         if ((int)$quest->rewardxp > 0) {
             $this->deliver_one($quest, $progress, 'xp', (int)$quest->rewardxp);
@@ -53,12 +61,18 @@ class reward_manager {
         }
     }
 
+    /**
+     * Retry.
+     */
     public function retry(\stdClass $quest, \stdClass $progress): void {
-        // deliver() is also the recovery path: it creates missing ledger rows and
+        // Deliver() is also the recovery path: it creates missing ledger rows and
         // skips rows that were already delivered.
         $this->deliver($quest, $progress);
     }
 
+    /**
+     * Deliver one.
+     */
     private function deliver_one(\stdClass $quest, \stdClass $progress, string $type, int $amount): void {
         global $DB;
         $factory = \core\lock\lock_config::get_lock_factory('local_xpquests');
@@ -127,6 +141,9 @@ class reward_manager {
         }
     }
 
+    /**
+     * Mark failed.
+     */
     private function mark_failed(\stdClass $progress, string $type, int $amount, string $reference): void {
         global $DB;
         $record = $DB->get_record('local_xpquests_rewards', [
@@ -148,6 +165,7 @@ class reward_manager {
                 $DB->insert_record('local_xpquests_rewards', $record);
             } catch (\dml_write_exception $ignored) {
                 // Another process may have completed the same idempotent reference.
+                return;
             }
             return;
         }
@@ -158,6 +176,9 @@ class reward_manager {
         }
     }
 
+    /**
+     * Ensure unavailable record.
+     */
     private function ensure_unavailable_record(\stdClass $progress, string $type, int $amount): void {
         global $DB;
         if ($DB->record_exists('local_xpquests_rewards', [

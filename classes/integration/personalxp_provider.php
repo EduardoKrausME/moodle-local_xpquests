@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/integration/personalxp_provider.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests\integration;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Personalxp provider.
+ */
 class personalxp_provider implements xp_provider_interface {
+    /**
+     * Award.
+     */
     public function award(int $userid, int $courseid, int $amount, string $reference): void {
         if ($amount <= 0) {
             return;
@@ -52,10 +57,16 @@ class personalxp_provider implements xp_provider_interface {
         );
     }
 
+    /**
+     * Get total.
+     */
     public function get_total(int $userid, int $courseid): int {
         return self::get_total_static($userid, $courseid);
     }
 
+    /**
+     * Get total static.
+     */
     public static function get_total_static(int $userid, int $courseid): int {
         $class = '\\local_personalxp\\service\\xp_manager';
         if (!class_exists($class) || !method_exists($class, 'get_total')) {
@@ -64,6 +75,9 @@ class personalxp_provider implements xp_provider_interface {
         return (int)$class::get_total($userid, $courseid);
     }
 
+    /**
+     * Reference id.
+     */
     private static function reference_id(string $reference): int {
         if (preg_match('/(\\d+)$/', $reference, $matches)) {
             return (int)$matches[1];

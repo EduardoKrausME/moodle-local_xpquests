@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/event/quest_step_completed.php for local_xpquests.
@@ -24,15 +24,23 @@
 
 namespace local_xpquests\event;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Quest step completed.
+ */
 class quest_step_completed extends \core\event\base {
+    /**
+     * Init.
+     */
     protected function init(): void {
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'local_xpquests_step_progress';
     }
 
+    /**
+     * Create for step.
+     */
     public static function create_for_step(
         \stdClass $quest,
         \stdClass $step,
@@ -51,14 +59,23 @@ class quest_step_completed extends \core\event\base {
         ]);
     }
 
+    /**
+     * Get name.
+     */
     public static function get_name(): string {
         return get_string('event_quest_step_completed', 'local_xpquests');
     }
 
+    /**
+     * Get description.
+     */
     public function get_description(): string {
         return "The user with id '{$this->relateduserid}' completed step '{$this->other['stepid']}' in quest '{$this->other['questid']}'.";
     }
 
+    /**
+     * Get url.
+     */
     public function get_url(): \moodle_url {
         return new \moodle_url('/local/xpquests/quest.php', ['id' => $this->other['questid']]);
     }

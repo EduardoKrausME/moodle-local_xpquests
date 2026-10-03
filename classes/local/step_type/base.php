@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/local/step_type/base.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests\local\step_type;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Base.
+ */
 abstract class base implements \local_xpquests\step_type_interface {
+    /**
+     * Config.
+     */
     protected function config(\stdClass $step): array {
         if (empty($step->configjson)) {
             return [];
@@ -35,6 +40,9 @@ abstract class base implements \local_xpquests\step_type_interface {
         return is_array($decoded) ? $decoded : [];
     }
 
+    /**
+     * Require cmid.
+     */
     protected function require_cmid(array $config, int $courseid): int {
         global $DB;
         $cmid = isset($config['cmid']) ? (int)$config['cmid'] : 0;
@@ -44,12 +52,18 @@ abstract class base implements \local_xpquests\step_type_interface {
         return $cmid;
     }
 
+    /**
+     * Get cminfo.
+     */
     protected function get_cminfo(int $cmid): \cm_info {
         $cm = get_coursemodule_from_id(null, $cmid, 0, false, MUST_EXIST);
         $modinfo = get_fast_modinfo($cm->course);
         return $modinfo->get_cm($cmid);
     }
 
+    /**
+     * Availability time.
+     */
     protected function availability_time(\stdClass $step, \stdClass $progress): int {
         global $DB;
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $step->questid], '*', MUST_EXIST);
@@ -72,6 +86,9 @@ abstract class base implements \local_xpquests\step_type_interface {
         return max((int)$progress->startedat, (int)$max);
     }
 
+    /**
+     * Get progress.
+     */
     public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
         $done = $this->is_completed($userid, $step, $progress);
         return ['current' => $done ? 1.0 : 0.0, 'target' => 1.0, 'completed' => $done];

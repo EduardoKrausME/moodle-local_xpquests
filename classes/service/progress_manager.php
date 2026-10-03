@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/service/progress_manager.php for local_xpquests.
@@ -24,14 +24,19 @@
 
 namespace local_xpquests\service;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Progress manager.
+ */
 class progress_manager {
     /** @var reward_manager */
     private $rewards;
     /** @var \local_xpquests\integration\xp_provider_interface */
     private $xp;
 
+    /**
+     * Create a new instance.
+     */
     public function __construct(
         ?reward_manager $rewards = null,
         ?\local_xpquests\integration\xp_provider_interface $xp = null
@@ -40,6 +45,9 @@ class progress_manager {
         $this->rewards = $rewards ?: new reward_manager($this->xp);
     }
 
+    /**
+     * Quest is open.
+     */
     public static function quest_is_open(\stdClass $quest, ?int $time = null): bool {
         $time = $time ?: time();
         if (empty($quest->enabled)) {
@@ -54,6 +62,9 @@ class progress_manager {
         return true;
     }
 
+    /**
+     * Get or create progress.
+     */
     public function get_or_create_progress(\stdClass $quest, int $userid): ?\stdClass {
         global $DB;
         $active = $DB->get_record('local_xpquests_progress', [
@@ -131,6 +142,9 @@ class progress_manager {
         }
     }
 
+    /**
+     * Is step available.
+     */
     public function is_step_available(\stdClass $quest, \stdClass $step, \stdClass $progress): bool {
         global $DB;
         if (empty($quest->sequential)) {
@@ -151,6 +165,9 @@ class progress_manager {
         ]);
     }
 
+    /**
+     * Mark step completed.
+     */
     public function mark_step_completed(
         \stdClass $quest,
         \stdClass $step,
@@ -194,6 +211,9 @@ class progress_manager {
         return true;
     }
 
+    /**
+     * Recalculate.
+     */
     public function recalculate(\stdClass $quest, \stdClass $progress): \stdClass {
         global $DB;
         if ($progress->status !== 'inprogress') {
@@ -243,6 +263,9 @@ class progress_manager {
         return $DB->get_record('local_xpquests_progress', ['id' => $progress->id], '*', MUST_EXIST);
     }
 
+    /**
+     * Complete if ready.
+     */
     public function complete_if_ready(\stdClass $quest, \stdClass $progress): bool {
         global $DB;
         $required = (int)$DB->count_records('local_xpquests_steps', [
@@ -303,6 +326,9 @@ class progress_manager {
         }
     }
 
+    /**
+     * Summary.
+     */
     public function summary(\stdClass $quest, ?\stdClass $progress): array {
         global $DB;
         $steps = $DB->get_records('local_xpquests_steps', ['questid' => $quest->id], 'sortorder ASC, id ASC');

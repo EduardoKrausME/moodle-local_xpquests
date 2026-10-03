@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/task/reconcile_active_quests.php for local_xpquests.
@@ -24,13 +24,21 @@
 
 namespace local_xpquests\task;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Reconcile active quests.
+ */
 class reconcile_active_quests extends \core\task\scheduled_task {
+    /**
+     * Get name.
+     */
     public function get_name(): string {
         return get_string('task_reconcile_active_quests', 'local_xpquests');
     }
 
+    /**
+     * Execute.
+     */
     public function execute(): void {
         global $DB;
         $manager = new \local_xpquests\service\progress_manager();

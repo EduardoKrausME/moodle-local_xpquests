@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * tests/manual_test.php for local_xpquests.
@@ -24,15 +24,45 @@
 
 namespace local_xpquests;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Manual tests.
+ */
 final class manual_test extends \advanced_testcase {
+    /**
+     * Course.
+     *
+     * @var mixed
+     */
     private $course;
+    /**
+     * Teacher.
+     *
+     * @var mixed
+     */
     private $teacher;
+    /**
+     * Student.
+     *
+     * @var mixed
+     */
     private $student;
+    /**
+     * Quest.
+     *
+     * @var mixed
+     */
     private $quest;
+    /**
+     * Step.
+     *
+     * @var mixed
+     */
     private $step;
 
+    /**
+     * SetUp.
+     */
     protected function setUp(): void {
         global $DB;
         parent::setUp();
@@ -87,6 +117,9 @@ final class manual_test extends \advanced_testcase {
         $DB->insert_record('local_xpquests_progress', $progress);
     }
 
+    /**
+     * Test authorised teacher can mark manual step.
+     */
     public function test_authorised_teacher_can_mark_manual_step(): void {
         global $DB;
         $this->setUser($this->teacher);
@@ -97,6 +130,9 @@ final class manual_test extends \advanced_testcase {
         ]));
     }
 
+    /**
+     * Test user without capability cannot mark manual step.
+     */
     public function test_user_without_capability_cannot_mark_manual_step(): void {
         $this->setUser($this->student);
         $this->expectException(\required_capability_exception::class);

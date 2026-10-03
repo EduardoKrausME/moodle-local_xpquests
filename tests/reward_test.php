@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * tests/reward_test.php for local_xpquests.
@@ -24,9 +24,16 @@
 
 namespace local_xpquests;
 
-defined('MOODLE_INTERNAL') || die();
 
+
+// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses -- Test doubles share this testcase file.
+/**
+ * Reward tests.
+ */
 final class reward_test extends \advanced_testcase {
+    /**
+     * Test xp and credits are delivered once.
+     */
     public function test_xp_and_credits_are_delivered_once(): void {
         global $DB;
         $this->resetAfterTest(true);
@@ -78,14 +85,51 @@ final class reward_test extends \advanced_testcase {
     }
 }
 
+/**
+ * Reward fake xp provider.
+ */
 class reward_fake_xp_provider implements \local_xpquests\integration\xp_provider_interface {
+    /**
+     * Awards.
+     *
+     * @var mixed
+     */
     public $awards = 0;
-    public function award(int $userid, int $courseid, int $amount, string $reference): void { $this->awards++; }
-    public function get_total(int $userid, int $courseid): int { return 0; }
+    /**
+     * Award.
+     */
+    public function award(int $userid, int $courseid, int $amount, string $reference): void {
+        $this->awards++;
+    }
+    /**
+     * Get total.
+     */
+    public function get_total(int $userid, int $courseid): int {
+        return 0;
+    }
 }
 
+/**
+ * Reward fake credit provider.
+ */
 class reward_fake_credit_provider implements \local_xpquests\integration\credit_provider_interface {
+    /**
+     * Awards.
+     *
+     * @var mixed
+     */
     public $awards = 0;
-    public function is_available(): bool { return true; }
-    public function add(int $userid, int $courseid, int $amount, string $reference): void { $this->awards++; }
+    /**
+     * Is available.
+     */
+    public function is_available(): bool {
+        return true;
+    }
+    /**
+     * Add.
+     */
+    public function add(int $userid, int $courseid, int $amount, string $reference): void {
+        $this->awards++;
+    }
 }
+// phpcs:enable PSR1.Classes.ClassDeclaration.MultipleClasses

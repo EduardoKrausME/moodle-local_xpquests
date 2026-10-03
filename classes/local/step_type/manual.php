@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/local/step_type/manual.php for local_xpquests.
@@ -24,17 +24,28 @@
 
 namespace local_xpquests\local\step_type;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Manual.
+ */
 class manual extends base {
+    /**
+     * Get name.
+     */
     public function get_name(): string {
         return get_string('steptype_manual', 'local_xpquests');
     }
 
+    /**
+     * Validate configuration.
+     */
     public function validate_configuration(array $config, int $courseid): array {
         return [];
     }
 
+    /**
+     * Is completed.
+     */
     public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
         global $DB;
         return $DB->record_exists('local_xpquests_step_progress', [
@@ -45,6 +56,9 @@ class manual extends base {
         ]);
     }
 
+    /**
+     * Get description.
+     */
     public function get_description(\stdClass $step): string {
         return get_string('stepdesc_manual', 'local_xpquests');
     }

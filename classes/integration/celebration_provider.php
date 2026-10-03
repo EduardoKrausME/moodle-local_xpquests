@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/integration/celebration_provider.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests\integration;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Celebration provider.
+ */
 class celebration_provider {
+    /**
+     * Queue completed.
+     */
     public static function queue_completed(\stdClass $quest, \stdClass $progress): void {
         $class = '\\local_xpcelebration\\api';
         if (!class_exists($class) || !method_exists($class, 'queue')) {

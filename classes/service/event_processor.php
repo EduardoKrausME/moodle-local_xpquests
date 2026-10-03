@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/service/event_processor.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests\service;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Event processor.
+ */
 class event_processor {
+    /**
+     * Observe.
+     */
     public static function observe(\core\event\base $event): void {
         global $DB;
         $courseid = (int)$event->courseid;
@@ -106,6 +111,9 @@ class event_processor {
         }
     }
 
+    /**
+     * Get target userid.
+     */
     private static function get_target_userid(\core\event\base $event): int {
         if (($event instanceof \core\event\course_module_completion_updated
                 || $event instanceof \mod_assign\event\assessable_submitted)

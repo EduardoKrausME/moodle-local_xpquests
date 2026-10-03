@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/integration/xp_provider_interface.php for local_xpquests.
@@ -24,9 +24,17 @@
 
 namespace local_xpquests\integration;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Xp provider interface.
+ */
 interface xp_provider_interface {
+    /**
+     * Award.
+     */
     public function award(int $userid, int $courseid, int $amount, string $reference): void;
+    /**
+     * Get total.
+     */
     public function get_total(int $userid, int $courseid): int;
 }

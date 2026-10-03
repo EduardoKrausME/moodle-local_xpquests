@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/api.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Api.
+ */
 class api {
+    /**
+     * Get available quests.
+     */
     public static function get_available_quests(int $courseid, int $userid): array {
         global $DB;
         $context = \context_course::instance($courseid);
@@ -69,6 +74,9 @@ class api {
         return $result;
     }
 
+    /**
+     * Get user progress.
+     */
     public static function get_user_progress(int $courseid, int $userid): array {
         global $DB;
         $quests = $DB->get_records('local_xpquests_quests', ['courseid' => $courseid], 'sortorder ASC, id ASC');
@@ -86,6 +94,9 @@ class api {
         return $result;
     }
 
+    /**
+     * Get quest progress.
+     */
     public static function get_quest_progress(int $questid, int $userid, bool $start = false): array {
         global $DB;
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $questid], '*', MUST_EXIST);
@@ -110,6 +121,9 @@ class api {
             $progress ? (int)$progress->completioncount : 0);
     }
 
+    /**
+     * Mark manual step.
+     */
     public static function mark_manual_step(int $stepid, int $userid): array {
         global $DB, $USER;
         $step = $DB->get_record('local_xpquests_steps', ['id' => $stepid], '*', MUST_EXIST);
@@ -132,6 +146,9 @@ class api {
         return self::get_quest_progress($quest->id, $userid, false);
     }
 
+    /**
+     * Recalculate progress.
+     */
     public static function recalculate_progress(int $questid, int $userid): array {
         global $DB;
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $questid], '*', MUST_EXIST);
@@ -148,6 +165,9 @@ class api {
         return self::get_quest_progress($questid, $userid, false);
     }
 
+    /**
+     * Quest to array.
+     */
     private static function quest_to_array(\stdClass $quest, array $summary, int $completioncount): array {
         return [
             'id' => (int)$quest->id,

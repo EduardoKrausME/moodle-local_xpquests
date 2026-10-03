@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/local/step_type/xp_earned.php for local_xpquests.
@@ -24,22 +24,36 @@
 
 namespace local_xpquests\local\step_type;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Xp earned.
+ */
 class xp_earned extends base {
+    /**
+     * Get name.
+     */
     public function get_name(): string {
         return get_string('steptype_xp_earned', 'local_xpquests');
     }
 
+    /**
+     * Validate configuration.
+     */
     public function validate_configuration(array $config, int $courseid): array {
         $amount = max(1, (int)($config['amount'] ?? 0));
         return ['amount' => $amount];
     }
 
+    /**
+     * Current total.
+     */
     private function current_total(int $userid, int $courseid): int {
         return \local_xpquests\integration\personalxp_provider::get_total_static($userid, $courseid);
     }
 
+    /**
+     * Is completed.
+     */
     public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
         $config = $this->config($step);
         $quest = $GLOBALS['DB']->get_record('local_xpquests_quests', ['id' => $step->questid], 'courseid', MUST_EXIST);
@@ -47,6 +61,9 @@ class xp_earned extends base {
             >= max(1, (int)($config['amount'] ?? 1));
     }
 
+    /**
+     * Get progress.
+     */
     public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
         global $DB;
         $config = $this->config($step);
@@ -56,6 +73,9 @@ class xp_earned extends base {
         return ['current' => (float)$current, 'target' => (float)$target, 'completed' => $current >= $target];
     }
 
+    /**
+     * Get description.
+     */
     public function get_description(\stdClass $step): string {
         $config = $this->config($step);
         return get_string('stepdesc_xp_earned', 'local_xpquests', max(1, (int)($config['amount'] ?? 1)));

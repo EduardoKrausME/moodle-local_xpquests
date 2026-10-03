@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/service/step_type_registry.php for local_xpquests.
@@ -24,9 +24,14 @@
 
 namespace local_xpquests\service;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Step type registry.
+ */
 class step_type_registry {
+    /**
+     * Get map.
+     */
     public static function get_map(): array {
         $types = [
             'activity_view' => \local_xpquests\local\step_type\activity_view::class,
@@ -53,6 +58,9 @@ class step_type_registry {
         return $types;
     }
 
+    /**
+     * Get.
+     */
     public static function get(string $type): \local_xpquests\step_type_interface {
         $map = self::get_map();
         if (empty($map[$type]) || !class_exists($map[$type])) {
@@ -65,6 +73,9 @@ class step_type_registry {
         return $instance;
     }
 
+    /**
+     * Choices.
+     */
     public static function choices(): array {
         $choices = [];
         foreach (self::get_map() as $key => $class) {

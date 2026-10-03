@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/form/step_form.php for local_xpquests.
@@ -24,10 +24,15 @@
 
 namespace local_xpquests\form;
 
-defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Step form.
+ */
 class step_form extends \moodleform {
+    /**
+     * Definition.
+     */
     protected function definition(): void {
         $mform = $this->_form;
         $courseid = (int)$this->_customdata['courseid'];

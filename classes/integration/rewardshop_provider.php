@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/integration/rewardshop_provider.php for local_xpquests.
@@ -24,14 +24,22 @@
 
 namespace local_xpquests\integration;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Rewardshop provider.
+ */
 class rewardshop_provider implements credit_provider_interface {
+    /**
+     * Is available.
+     */
     public function is_available(): bool {
         return class_exists('\\local_rewardshop\\api')
             && method_exists('\\local_rewardshop\\api', 'add_credits');
     }
 
+    /**
+     * Add.
+     */
     public function add(int $userid, int $courseid, int $amount, string $reference): void {
         if ($amount <= 0) {
             return;

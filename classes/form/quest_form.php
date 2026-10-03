@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/form/quest_form.php for local_xpquests.
@@ -24,10 +24,15 @@
 
 namespace local_xpquests\form;
 
-defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Quest form.
+ */
 class quest_form extends \moodleform {
+    /**
+     * Definition.
+     */
     protected function definition(): void {
         $mform = $this->_form;
         $mform->addElement('text', 'name', get_string('questname', 'local_xpquests'), ['size' => 60]);
@@ -67,6 +72,9 @@ class quest_form extends \moodleform {
         $this->add_action_buttons();
     }
 
+    /**
+     * Validation.
+     */
     public function validation($data, $files): array {
         $errors = parent::validation($data, $files);
         if (!empty($data['timeend']) && !empty($data['timestart']) && $data['timeend'] <= $data['timestart']) {

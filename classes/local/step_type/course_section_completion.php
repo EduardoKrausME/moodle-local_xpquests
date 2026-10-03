@@ -8,11 +8,11 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle. If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * classes/local/step_type/course_section_completion.php for local_xpquests.
@@ -24,13 +24,21 @@
 
 namespace local_xpquests\local\step_type;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Course section completion.
+ */
 class course_section_completion extends base implements \local_xpquests\event_step_type_interface {
+    /**
+     * Get name.
+     */
     public function get_name(): string {
         return get_string('steptype_course_section_completion', 'local_xpquests');
     }
 
+    /**
+     * Validate configuration.
+     */
     public function validate_configuration(array $config, int $courseid): array {
         global $DB;
         $sectionnum = max(0, (int)($config['sectionnum'] ?? -1));
@@ -40,6 +48,9 @@ class course_section_completion extends base implements \local_xpquests\event_st
         return ['sectionnum' => $sectionnum];
     }
 
+    /**
+     * Is completed.
+     */
     public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
         global $DB;
         $config = $this->config($step);
@@ -76,6 +87,9 @@ class course_section_completion extends base implements \local_xpquests\event_st
         return $lastcompletion >= $this->availability_time($step, $progress);
     }
 
+    /**
+     * Get progress.
+     */
     public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
         global $DB;
         $config = $this->config($step);
@@ -111,10 +125,16 @@ class course_section_completion extends base implements \local_xpquests\event_st
         ];
     }
 
+    /**
+     * Supports event.
+     */
     public function supports_event(\core\event\base $event): bool {
         return $event instanceof \core\event\course_module_completion_updated;
     }
 
+    /**
+     * Matches event.
+     */
     public function matches_event(\core\event\base $event, \stdClass $step): bool {
         global $DB;
         if (!$this->supports_event($event)) {
@@ -129,6 +149,9 @@ class course_section_completion extends base implements \local_xpquests\event_st
         return $section && (int)$section->section === (int)($config['sectionnum'] ?? -1);
     }
 
+    /**
+     * Is completed by event.
+     */
     public function is_completed_by_event(
         \core\event\base $event,
         int $userid,
@@ -140,6 +163,9 @@ class course_section_completion extends base implements \local_xpquests\event_st
             && $this->is_completed($userid, $step, $progress);
     }
 
+    /**
+     * Get description.
+     */
     public function get_description(\stdClass $step): string {
         $config = $this->config($step);
         return get_string('stepdesc_course_section_completion', 'local_xpquests', (int)($config['sectionnum'] ?? 0));
