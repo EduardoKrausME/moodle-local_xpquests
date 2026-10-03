@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Reward tests.
  *
- * @covers \\local_xpquests\\service\\reward_manager
+ * @covers \local_xpquests\service\reward_manager
  */
 final class reward_test extends \advanced_testcase {
     /**

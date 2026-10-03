@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Progress tests.
  *
- * @covers \\local_xpquests\\service\\progress_manager
+ * @covers \local_xpquests\service\progress_manager
  */
 final class progress_test extends \advanced_testcase {
     /**
