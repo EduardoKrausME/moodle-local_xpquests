@@ -43,17 +43,13 @@ $string['editstep'] = 'Editar etapa';
 $string['enabled'] = 'Ativa';
 $string['error_maxcompletions'] = 'O máximo de conclusões não pode ser negativo.';
 $string['error_negative_reward'] = 'As recompensas não podem ser negativas.';
-
 $string['error_timeend'] = 'A data final deve ser posterior à data inicial.';
 $string['event_quest_completed'] = 'Missão concluída';
-
 $string['event_quest_started'] = 'Missão iniciada';
 $string['event_quest_step_completed'] = 'Etapa da missão concluída';
 $string['imageurl'] = 'URL da imagem';
 $string['invalidstepconfig'] = 'Configuração de etapa inválida: {$a}';
-
 $string['managequests'] = 'Gerenciar missões';
-
 $string['managesteps'] = 'Gerenciar etapas da missão';
 $string['maxcompletions'] = 'Máximo de conclusões (0 = ilimitado)';
 $string['minposts'] = 'Quantidade de posts';
@@ -67,11 +63,9 @@ $string['of'] = 'de';
 $string['optional'] = 'Opcional';
 $string['optionalstep'] = 'Etapa opcional';
 $string['personalxpapiunavailable'] = 'A API pública obrigatória do local_personalxp não está disponível.';
-
 $string['personalxpdisabled'] = 'O Personal XP está desativado, então a recompensa de XP da missão ainda não pode ser entregue.';
 $string['pluginname'] = 'Missões de XP';
 $string['preview'] = 'Preview';
-
 $string['privacy:metadata:progress'] = 'Progresso das execuções de missões de cada aluno.';
 $string['privacy:metadata:progress:completedat'] = 'Quando a execução da missão foi concluída.';
 $string['privacy:metadata:progress:questid'] = 'A missão em execução.';
@@ -109,7 +103,6 @@ $string['status_notstarted'] = 'Não iniciada';
 $string['step_activity_missing'] = 'A atividade configurada foi removida ou não está disponível.';
 $string['step_unavailable'] = 'Esta etapa não pode mais ser avaliada.';
 $string['stepdesc_activity_completion'] = 'Concluir “{$a}”.';
-
 $string['stepdesc_activity_view'] = 'Visualizar “{$a}”.';
 $string['stepdesc_assignment_submission'] = 'Enviar “{$a}”.';
 $string['stepdesc_course_section_completion'] = 'Concluir todas as atividades com conclusão habilitada na seção {$a}.';
@@ -122,7 +115,6 @@ $string['stepname'] = 'Nome da etapa';
 $string['steps'] = 'Etapas';
 $string['steptype'] = 'Tipo da etapa';
 $string['steptype_activity_completion'] = 'Concluir atividade';
-
 $string['steptype_activity_view'] = 'Visualizar atividade';
 $string['steptype_assignment_submission'] = 'Enviar tarefa';
 $string['steptype_course_section_completion'] = 'Concluir seção do curso';

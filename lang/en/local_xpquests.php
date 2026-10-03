@@ -43,17 +43,13 @@ $string['editstep'] = 'Edit step';
 $string['enabled'] = 'Enabled';
 $string['error_maxcompletions'] = 'Maximum completions cannot be negative.';
 $string['error_negative_reward'] = 'Rewards cannot be negative.';
-
 $string['error_timeend'] = 'The end date must be after the start date.';
 $string['event_quest_completed'] = 'Quest completed';
-
 $string['event_quest_started'] = 'Quest started';
 $string['event_quest_step_completed'] = 'Quest step completed';
 $string['imageurl'] = 'Image URL';
 $string['invalidstepconfig'] = 'Invalid step configuration: {$a}';
-
 $string['managequests'] = 'Manage quests';
-
 $string['managesteps'] = 'Manage quest steps';
 $string['maxcompletions'] = 'Maximum completions (0 = unlimited)';
 $string['minposts'] = 'Required posts';
@@ -67,11 +63,9 @@ $string['of'] = 'of';
 $string['optional'] = 'Optional';
 $string['optionalstep'] = 'Optional step';
 $string['personalxpapiunavailable'] = 'The required local_personalxp public API is unavailable.';
-
 $string['personalxpdisabled'] = 'Personal XP is disabled, so the quest XP reward cannot be delivered yet.';
 $string['pluginname'] = 'XP Quests';
 $string['preview'] = 'Preview';
-
 $string['privacy:metadata:progress'] = 'Quest execution progress for each learner.';
 $string['privacy:metadata:progress:completedat'] = 'When the quest execution was completed.';
 $string['privacy:metadata:progress:questid'] = 'The quest being performed.';
@@ -109,7 +103,6 @@ $string['status_notstarted'] = 'Not started';
 $string['step_activity_missing'] = 'The configured activity was removed or is unavailable.';
 $string['step_unavailable'] = 'This step can no longer be evaluated.';
 $string['stepdesc_activity_completion'] = 'Complete “{$a}”.';
-
 $string['stepdesc_activity_view'] = 'View “{$a}”.';
 $string['stepdesc_assignment_submission'] = 'Submit “{$a}”.';
 $string['stepdesc_course_section_completion'] = 'Complete all activities with completion tracking in section {$a}.';
@@ -122,7 +115,6 @@ $string['stepname'] = 'Step name';
 $string['steps'] = 'Steps';
 $string['steptype'] = 'Step type';
 $string['steptype_activity_completion'] = 'Activity completed';
-
 $string['steptype_activity_view'] = 'Activity viewed';
 $string['steptype_assignment_submission'] = 'Assignment submitted';
 $string['steptype_course_section_completion'] = 'Course section completed';
