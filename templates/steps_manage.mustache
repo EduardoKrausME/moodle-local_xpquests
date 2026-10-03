@@ -4,23 +4,27 @@
         <a class="btn btn-secondary" href="{{{previewurl}}}">{{#str}}preview, local_xpquests{{/str}}</a>
         <a class="btn btn-secondary" href="{{{backurl}}}">{{#str}}back, local_xpquests{{/str}}</a>
     </div>
-    {{#empty}}<div class="alert alert-info">{{#str}}nosteps, local_xpquests{{/str}}</div>{{/empty}}
+    {{#empty}}
+        <div class="alert alert-info">{{#str}}nosteps, local_xpquests{{/str}}</div>{{/empty}}
     <div id="xpquests-step-list" class="xpq-sortable" data-questid="{{questid}}">
         {{#steps}}
             <div class="xpq-sortable-item" draggable="true" data-stepid="{{id}}">
                 <div class="xpq-drag-handle" aria-label="{{#str}}dragtoorder, local_xpquests{{/str}}">⋮⋮</div>
                 <div class="xpq-sortable-content">
                     <strong>{{name}}</strong>
-                    <div><small>{{typename}} · {{description}} {{#optional}}· {{#str}}optional, local_xpquests{{/str}}{{/optional}}</small></div>
+                    <div><small>{{typename}} · {{description}} {{#optional}}
+                        · {{#str}}optional, local_xpquests{{/str}}{{/optional}}</small></div>
                 </div>
                 <div class="text-nowrap">
-                    <a class="btn btn-sm btn-outline-primary" href="{{{editurl}}}">{{#str}}edit, local_xpquests{{/str}}</a>
+                    <a class="btn btn-sm btn-outline-primary" href="{{{editurl}}}">{{#str}}
+                        edit, local_xpquests{{/str}}</a>
                     <form class="d-inline" method="post" action="{{actionurl}}">
                         <input type="hidden" name="questid" value="{{questid}}">
                         <input type="hidden" name="id" value="{{id}}">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="sesskey" value="{{sesskey}}">
-                        <button class="btn btn-sm btn-outline-danger" type="submit">{{#str}}delete, local_xpquests{{/str}}</button>
+                        <button class="btn btn-sm btn-outline-danger" type="submit">{{#str}}
+                            delete, local_xpquests{{/str}}</button>
                     </form>
                 </div>
             </div>

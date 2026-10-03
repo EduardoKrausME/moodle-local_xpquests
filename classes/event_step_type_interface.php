@@ -25,6 +25,9 @@
 namespace local_xpquests;
 
 
+use core\event\base;
+use stdClass;
+
 /**
  * Event step type interface.
  */
@@ -32,21 +35,21 @@ interface event_step_type_interface extends step_type_interface {
     /**
      * Supports event.
      */
-    public function supports_event(\core\event\base $event): bool;
+    public function supports_event(base $event): bool;
 
     /**
      * Whether this event targets the configured step, independently of whether
      * the completion criterion has already been reached.
      */
-    public function matches_event(\core\event\base $event, \stdClass $step): bool;
+    public function matches_event(base $event, stdClass $step): bool;
 
     /**
      * Is completed by event.
      */
     public function is_completed_by_event(
-        \core\event\base $event,
-        int $userid,
-        \stdClass $step,
-        \stdClass $progress
+        base     $event,
+        int      $userid,
+        stdClass $step,
+        stdClass $progress
     ): bool;
 }

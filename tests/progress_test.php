@@ -24,15 +24,24 @@
 
 namespace local_xpquests;
 
+use advanced_testcase;
+use local_xpquests\integration\credit_provider_interface;
+use local_xpquests\integration\xp_provider_interface;
+use local_xpquests\service\progress_manager;
+use local_xpquests\service\reward_manager;
+use local_xpquests\step_type\activity_completion;
+use stdClass;
+
 defined('MOODLE_INTERNAL') || die;
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses -- Test doubles share this testcase file.
+
 /**
  * Progress tests.
  *
  * @covers \local_xpquests\service\progress_manager
  */
-final class progress_test extends \advanced_testcase {
+final class progress_test extends advanced_testcase {
     /**
      * Course.
      *
@@ -108,7 +117,7 @@ final class progress_test extends \advanced_testcase {
         $quest = $this->create_quest();
         $step = $this->create_step($quest, 'activity_completion', 10, 0, ['cmid' => 999999]);
         $progress = $this->manager()->get_or_create_progress($quest, $this->student->id);
-        $type = new \local_xpquests\local\step_type\activity_completion();
+        $type = new activity_completion();
         $this->assertFalse($type->is_completed($this->student->id, $step, $progress));
         $this->assertSame(get_string('step_activity_missing', 'local_xpquests'), $type->get_description($step));
     }
@@ -173,17 +182,17 @@ final class progress_test extends \advanced_testcase {
     /**
      * Manager.
      */
-    private function manager(): \local_xpquests\service\progress_manager {
+    private function manager(): progress_manager {
         $xp = new fake_xp_provider();
         $credits = new fake_credit_provider();
-        $rewards = new \local_xpquests\service\reward_manager($xp, $credits);
-        return new \local_xpquests\service\progress_manager($rewards, $xp);
+        $rewards = new reward_manager($xp, $credits);
+        return new progress_manager($rewards, $xp);
     }
 
     /**
      * Create quest.
      */
-    private function create_quest(array $overrides = []): \stdClass {
+    private function create_quest(array $overrides = []): stdClass {
         global $DB;
         $now = time();
         $data = array_merge([
@@ -212,12 +221,12 @@ final class progress_test extends \advanced_testcase {
      * Create step.
      */
     private function create_step(
-        \stdClass $quest,
-        string $type,
-        int $sortorder = 10,
-        int $optional = 0,
-        array $config = []
-    ): \stdClass {
+        stdClass $quest,
+        string   $type,
+        int      $sortorder = 10,
+        int      $optional = 0,
+        array    $config = []
+    ): stdClass {
         global $DB;
         $now = time();
         $step = (object)[
@@ -238,7 +247,7 @@ final class progress_test extends \advanced_testcase {
 /**
  * Fake xp provider.
  */
-class fake_xp_provider implements \local_xpquests\integration\xp_provider_interface {
+class fake_xp_provider implements xp_provider_interface {
     /**
      * Awards.
      *
@@ -251,6 +260,7 @@ class fake_xp_provider implements \local_xpquests\integration\xp_provider_interf
      * @var mixed
      */
     public $total = 0;
+
     /**
      * Award.
      */
@@ -258,6 +268,7 @@ class fake_xp_provider implements \local_xpquests\integration\xp_provider_interf
         $this->awards++;
         $this->total += $amount;
     }
+
     /**
      * Get total.
      */
@@ -269,19 +280,21 @@ class fake_xp_provider implements \local_xpquests\integration\xp_provider_interf
 /**
  * Fake credit provider.
  */
-class fake_credit_provider implements \local_xpquests\integration\credit_provider_interface {
+class fake_credit_provider implements credit_provider_interface {
     /**
      * Awards.
      *
      * @var mixed
      */
     public $awards = 0;
+
     /**
      * Is available.
      */
     public function is_available(): bool {
         return true;
     }
+
     /**
      * Add.
      */

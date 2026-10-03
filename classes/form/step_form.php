@@ -24,6 +24,9 @@
 
 namespace local_xpquests\form;
 
+use local_xpquests\service\step_type_registry;
+use moodleform;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
@@ -31,7 +34,7 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Step form.
  */
-class step_form extends \moodleform {
+class step_form extends moodleform {
     /**
      * Definition.
      */
@@ -54,7 +57,7 @@ class step_form extends \moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addElement('select', 'steptype', get_string('steptype', 'local_xpquests'),
-            \local_xpquests\service\step_type_registry::choices());
+            step_type_registry::choices());
         $mform->addElement('advcheckbox', 'optional', get_string('optionalstep', 'local_xpquests'));
 
         $mform->addElement('select', 'cmid', get_string('activity', 'local_xpquests'), $modules);

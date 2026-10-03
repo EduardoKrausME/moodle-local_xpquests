@@ -22,6 +22,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_xpquests\service\step_type_registry;
+
 require('../../config.php');
 
 $questid = required_param('questid', PARAM_INT);
@@ -41,7 +43,7 @@ $records = $DB->get_records('local_xpquests_steps', ['questid' => $questid], 'so
 $steps = [];
 foreach ($records as $step) {
     try {
-        $type = \local_xpquests\service\step_type_registry::get($step->steptype);
+        $type = step_type_registry::get($step->steptype);
         $description = $type->get_description($step);
         $typename = $type->get_name();
     } catch (Throwable $e) {

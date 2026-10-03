@@ -22,6 +22,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_xpquests\form\quest_form;
+
 require('../../config.php');
 
 $courseid = required_param('courseid', PARAM_INT);
@@ -42,7 +44,7 @@ $PAGE->set_context($context);
 $PAGE->set_title($id ? get_string('editquest', 'local_xpquests') : get_string('createquest', 'local_xpquests'));
 $PAGE->set_heading(format_string($course->fullname));
 
-$form = new \local_xpquests\form\quest_form();
+$form = new quest_form();
 if ($quest) {
     $defaults = clone $quest;
     $defaults->description_editor = ['text' => $quest->description ?: '', 'format' => FORMAT_HTML];
@@ -76,9 +78,9 @@ if ($data = $form->get_data()) {
         $DB->update_record('local_xpquests_quests', $record);
     } else {
         $record->sortorder = 10 + (int)$DB->get_field_sql(
-            'SELECT COALESCE(MAX(sortorder), 0) FROM {local_xpquests_quests} WHERE courseid = :courseid',
-            ['courseid' => $courseid]
-        );
+                'SELECT COALESCE(MAX(sortorder), 0) FROM {local_xpquests_quests} WHERE courseid = :courseid',
+                ['courseid' => $courseid]
+            );
         $record->timecreated = $now;
         $id = $DB->insert_record('local_xpquests_quests', $record);
     }

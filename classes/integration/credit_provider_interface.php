@@ -33,6 +33,7 @@ interface credit_provider_interface {
      * Is available.
      */
     public function is_available(): bool;
+
     /**
      * Add.
      */

@@ -25,6 +25,12 @@
 namespace local_xpquests\service;
 
 
+use core\event\base;
+use core\event\course_module_completion_updated;
+use local_xpquests\event_step_type_interface;
+use mod_assign\event\assessable_submitted;
+use Throwable;
+
 /**
  * Event processor.
  */
@@ -32,7 +38,7 @@ class event_processor {
     /**
      * Observe.
      */
-    public static function observe(\core\event\base $event): void {
+    public static function observe(base $event): void {
         global $DB;
         $courseid = (int)$event->courseid;
         if (!$courseid) {
@@ -67,7 +73,7 @@ class event_processor {
             foreach ($steps as $step) {
                 try {
                     $type = step_type_registry::get($step->steptype);
-                    if (!$type instanceof \local_xpquests\event_step_type_interface || !$type->supports_event($event)) {
+                    if (!$type instanceof event_step_type_interface || !$type->supports_event($event)) {
                         continue;
                     }
                     if (!$progress) {
@@ -104,7 +110,7 @@ class event_processor {
                             break;
                         }
                     }
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     debugging('XP Quest observer ignored an event: ' . $e->getMessage(), DEBUG_DEVELOPER);
                 }
             }
@@ -114,9 +120,9 @@ class event_processor {
     /**
      * Get target userid.
      */
-    private static function get_target_userid(\core\event\base $event): int {
-        if (($event instanceof \core\event\course_module_completion_updated
-                || $event instanceof \mod_assign\event\assessable_submitted)
+    private static function get_target_userid(base $event): int {
+        if (($event instanceof course_module_completion_updated
+                || $event instanceof assessable_submitted)
             && !empty($event->relateduserid)) {
             return (int)$event->relateduserid;
         }

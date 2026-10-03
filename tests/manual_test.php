@@ -25,12 +25,15 @@
 namespace local_xpquests;
 
 
+use advanced_testcase;
+use required_capability_exception;
+
 /**
  * Manual tests.
  *
- * @covers \local_xpquests\api
+ * @covers api
  */
-final class manual_test extends \advanced_testcase {
+final class manual_test extends advanced_testcase {
     /**
      * Course.
      *
@@ -125,7 +128,7 @@ final class manual_test extends \advanced_testcase {
     public function test_authorised_teacher_can_mark_manual_step(): void {
         global $DB;
         $this->setUser($this->teacher);
-        \local_xpquests\api::mark_manual_step($this->step->id, $this->student->id);
+        api::mark_manual_step($this->step->id, $this->student->id);
         $this->assertTrue($DB->record_exists('local_xpquests_step_progress', [
             'stepid' => $this->step->id,
             'userid' => $this->student->id,
@@ -137,7 +140,7 @@ final class manual_test extends \advanced_testcase {
      */
     public function test_user_without_capability_cannot_mark_manual_step(): void {
         $this->setUser($this->student);
-        $this->expectException(\required_capability_exception::class);
-        \local_xpquests\api::mark_manual_step($this->step->id, $this->student->id);
+        $this->expectException(required_capability_exception::class);
+        api::mark_manual_step($this->step->id, $this->student->id);
     }
 }

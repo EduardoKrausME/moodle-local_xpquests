@@ -3,42 +3,59 @@
         <a class="btn btn-primary" href="{{{createurl}}}">{{#str}}createquest, local_xpquests{{/str}}</a>
         <a class="btn btn-secondary" href="{{{studenturl}}}">{{#str}}studentview, local_xpquests{{/str}}</a>
     </div>
-    {{#empty}}<div class="alert alert-info">{{#str}}noquests, local_xpquests{{/str}}</div>{{/empty}}
+    {{#empty}}
+        <div class="alert alert-info">{{#str}}noquests, local_xpquests{{/str}}</div>{{/empty}}
     {{^empty}}
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead><tr><th>{{#str}}quest, local_xpquests{{/str}}</th><th>{{#str}}mode, local_xpquests{{/str}}</th><th>{{#str}}steps, local_xpquests{{/str}}</th><th>{{#str}}rewards, local_xpquests{{/str}}</th><th>{{#str}}status, local_xpquests{{/str}}</th><th></th></tr></thead>
-            <tbody>
-                {{#quests}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
                 <tr>
-                    <td><strong>{{name}}</strong></td>
-                    <td>{{mode}}</td>
-                    <td>{{steps}}</td>
-                    <td>+{{rewardxp}} XP · +{{rewardcredits}} {{#str}}credits, local_xpquests{{/str}}</td>
-                    <td>{{#enabled}}{{#str}}enabled, local_xpquests{{/str}}{{/enabled}}{{^enabled}}{{#str}}disabled, local_xpquests{{/str}}{{/enabled}}</td>
-                    <td class="text-nowrap">
-                        <a class="btn btn-sm btn-outline-primary" href="{{{editurl}}}">{{#str}}edit, local_xpquests{{/str}}</a>
-                        <a class="btn btn-sm btn-outline-secondary" href="{{{stepsurl}}}">{{#str}}steps, local_xpquests{{/str}}</a>
-                        <a class="btn btn-sm btn-outline-secondary" href="{{{previewurl}}}">{{#str}}preview, local_xpquests{{/str}}</a>
-                        <form class="d-inline" method="post" action="{{actionurl}}">
-                            <input type="hidden" name="courseid" value="{{courseid}}">
-                            <input type="hidden" name="id" value="{{id}}">
-                            <input type="hidden" name="action" value="duplicate">
-                            <input type="hidden" name="sesskey" value="{{sesskey}}">
-                            <button class="btn btn-sm btn-outline-secondary" type="submit">{{#str}}duplicate, local_xpquests{{/str}}</button>
-                        </form>
-                        <form class="d-inline" method="post" action="{{actionurl}}">
-                            <input type="hidden" name="courseid" value="{{courseid}}">
-                            <input type="hidden" name="id" value="{{id}}">
-                            <input type="hidden" name="action" value="toggle">
-                            <input type="hidden" name="sesskey" value="{{sesskey}}">
-                            <button class="btn btn-sm btn-outline-secondary" type="submit">{{#str}}toggle, local_xpquests{{/str}}</button>
-                        </form>
-                    </td>
+                    <th>{{#str}}quest, local_xpquests{{/str}}</th>
+                    <th>{{#str}}mode, local_xpquests{{/str}}</th>
+                    <th>{{#str}}steps, local_xpquests{{/str}}</th>
+                    <th>{{#str}}rewards, local_xpquests{{/str}}</th>
+                    <th>{{#str}}status, local_xpquests{{/str}}</th>
+                    <th></th>
                 </tr>
+                </thead>
+                <tbody>
+                {{#quests}}
+                    <tr>
+                        <td><strong>{{name}}</strong></td>
+                        <td>{{mode}}</td>
+                        <td>{{steps}}</td>
+                        <td>+{{rewardxp}} XP · +{{rewardcredits}} {{#str}}credits, local_xpquests{{/str}}</td>
+                        <td>{{#enabled}}{{#str}}
+                            enabled, local_xpquests{{/str}}{{/enabled}}{{^enabled}}{{#str}}
+                            disabled, local_xpquests{{/str}}{{/enabled}}</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" href="{{{editurl}}}">{{#str}}
+                                edit, local_xpquests{{/str}}</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="{{{stepsurl}}}">{{#str}}
+                                steps, local_xpquests{{/str}}</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="{{{previewurl}}}">{{#str}}
+                                preview, local_xpquests{{/str}}</a>
+                            <form class="d-inline" method="post" action="{{actionurl}}">
+                                <input type="hidden" name="courseid" value="{{courseid}}">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <input type="hidden" name="action" value="duplicate">
+                                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">{{#str}}
+                                    duplicate, local_xpquests{{/str}}</button>
+                            </form>
+                            <form class="d-inline" method="post" action="{{actionurl}}">
+                                <input type="hidden" name="courseid" value="{{courseid}}">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <input type="hidden" name="action" value="toggle">
+                                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">{{#str}}
+                                    toggle, local_xpquests{{/str}}</button>
+                            </form>
+                        </td>
+                    </tr>
                 {{/quests}}
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
     {{/empty}}
 </div>

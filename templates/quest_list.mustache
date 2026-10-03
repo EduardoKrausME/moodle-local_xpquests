@@ -14,14 +14,17 @@
                         </div>
                         <h3>{{name}}</h3>
                         <div class="xpq-description">{{{description}}}</div>
-                        <div class="xpq-progress" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="xpq-progress" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0"
+                             aria-valuemax="100">
                             <span style="width: {{percent}}%"></span>
                         </div>
                         <div class="xpq-card-footer">
                             <strong>{{percent}}%</strong>
                             <div class="xpq-rewards">
                                 {{#hasxp}}<span>+{{rewardxp}} XP</span>{{/hasxp}}
-                                {{#hascredits}}<span>+{{rewardcredits}} {{#str}}credits, local_xpquests{{/str}}</span>{{/hascredits}}
+                                {{#hascredits}}
+                                    <span>+{{rewardcredits}} {{#str}}
+                                        credits, local_xpquests{{/str}}</span>{{/hascredits}}
                             </div>
                         </div>
                     </div>

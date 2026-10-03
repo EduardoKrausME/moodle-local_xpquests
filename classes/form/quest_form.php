@@ -24,6 +24,8 @@
 
 namespace local_xpquests\form;
 
+use moodleform;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/formslib.php');
@@ -31,7 +33,7 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Quest form.
  */
-class quest_form extends \moodleform {
+class quest_form extends moodleform {
     /**
      * Definition.
      */

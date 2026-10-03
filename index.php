@@ -22,6 +22,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_xpquests\api;
+
 require('../../config.php');
 
 $courseid = required_param('courseid', PARAM_INT);
@@ -35,7 +37,7 @@ $PAGE->set_context($context);
 $PAGE->set_title(get_string('pluginname', 'local_xpquests'));
 $PAGE->set_heading(format_string($course->fullname));
 
-$quests = \local_xpquests\api::get_available_quests($courseid, $USER->id);
+$quests = api::get_available_quests($courseid, $USER->id);
 foreach ($quests as &$quest) {
     $quest['url'] = (new moodle_url('/local/xpquests/quest.php', ['id' => $quest['id']]))->out(false);
     $quest['statuslabel'] = get_string('status_' . $quest['status'], 'local_xpquests');

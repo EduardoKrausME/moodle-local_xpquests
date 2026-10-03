@@ -25,10 +25,14 @@
 namespace local_xpquests\privacy;
 
 
+use context;
+use context_course;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
+use core_privacy\local\request\core_user_data_provider;
+use core_privacy\local\request\core_userlist_provider;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
@@ -38,8 +42,8 @@ use core_privacy\local\request\writer;
  */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\core_user_data_provider,
-    \core_privacy\local\request\core_userlist_provider {
+    core_user_data_provider,
+    core_userlist_provider {
 
     /**
      * Get metadata.
@@ -87,7 +91,7 @@ class provider implements
         global $DB;
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if (!$context instanceof \context_course) {
+            if (!$context instanceof context_course) {
                 continue;
             }
             $sql = "SELECT p.*, q.name AS questname
@@ -114,13 +118,13 @@ class provider implements
                     'completioncount' => (int)$run->completioncount,
                     'started' => transform::datetime($run->startedat),
                     'completed' => $run->completedat ? transform::datetime($run->completedat) : null,
-                    'steps' => array_map(function($step) {
+                    'steps' => array_map(function ($step) {
                         return (object)[
                             'name' => $step->stepname,
                             'completed' => transform::datetime($step->completedat),
                         ];
                     }, array_values($steps)),
-                    'rewards' => array_map(function($reward) {
+                    'rewards' => array_map(function ($reward) {
                         return (object)[
                             'type' => $reward->rewardtype,
                             'amount' => (int)$reward->amount,
@@ -139,9 +143,9 @@ class provider implements
     /**
      * Delete data for all users in context.
      */
-    public static function delete_data_for_all_users_in_context(\context $context): void {
+    public static function delete_data_for_all_users_in_context(context $context): void {
         global $DB;
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof context_course) {
             return;
         }
         $questids = $DB->get_fieldset_select('local_xpquests_quests', 'id', 'courseid = :courseid', [
@@ -157,7 +161,7 @@ class provider implements
         global $DB;
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            if (!$context instanceof \context_course) {
+            if (!$context instanceof context_course) {
                 continue;
             }
             $questids = $DB->get_fieldset_select('local_xpquests_quests', 'id', 'courseid = :courseid', [
@@ -172,7 +176,7 @@ class provider implements
      */
     public static function get_users_in_context(userlist $userlist): void {
         $context = $userlist->get_context();
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof context_course) {
             return;
         }
         $sql = "SELECT p.userid
@@ -188,7 +192,7 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist): void {
         global $DB;
         $context = $userlist->get_context();
-        if (!$context instanceof \context_course) {
+        if (!$context instanceof context_course) {
             return;
         }
         $questids = $DB->get_fieldset_select('local_xpquests_quests', 'id', 'courseid = :courseid', [
@@ -207,7 +211,7 @@ class provider implements
         if (!$questids) {
             return;
         }
-        list($insql, $params) = $DB->get_in_or_equal($questids, SQL_PARAMS_NAMED, 'q');
+        [$insql, $params] = $DB->get_in_or_equal($questids, SQL_PARAMS_NAMED, 'q');
         $where = "questid {$insql}";
         if ($userid !== null) {
             $where .= ' AND userid = :userid';
@@ -217,7 +221,7 @@ class provider implements
         if (!$progressids) {
             return;
         }
-        list($progresssql, $progressparams) = $DB->get_in_or_equal($progressids, SQL_PARAMS_NAMED, 'p');
+        [$progresssql, $progressparams] = $DB->get_in_or_equal($progressids, SQL_PARAMS_NAMED, 'p');
         $DB->delete_records_select('local_xpquests_rewards', "progressid {$progresssql}", $progressparams);
         $DB->delete_records_select('local_xpquests_step_progress', "progressid {$progresssql}", $progressparams);
         $DB->delete_records_select('local_xpquests_progress', "id {$progresssql}", $progressparams);

@@ -25,6 +25,10 @@
 namespace local_xpquests\integration;
 
 
+use coding_exception;
+use moodle_exception;
+use ReflectionMethod;
+
 /**
  * Rewardshop provider.
  */
@@ -45,9 +49,9 @@ class rewardshop_provider implements credit_provider_interface {
             return;
         }
         if (!$this->is_available()) {
-            throw new \moodle_exception('rewardshopapiunavailable', 'local_xpquests');
+            throw new moodle_exception('rewardshopapiunavailable', 'local_xpquests');
         }
-        $reflection = new \ReflectionMethod('\\local_rewardshop\\api', 'add_credits');
+        $reflection = new ReflectionMethod('\\local_rewardshop\\api', 'add_credits');
         $values = [
             'userid' => $userid,
             'courseid' => $courseid,
@@ -72,7 +76,7 @@ class rewardshop_provider implements credit_provider_interface {
             } else if ($parameter->allowsNull()) {
                 $args[] = null;
             } else {
-                throw new \coding_exception('Unsupported local_rewardshop API parameter: ' . $parameter->getName());
+                throw new coding_exception('Unsupported local_rewardshop API parameter: ' . $parameter->getName());
             }
         }
         $reflection->invokeArgs(null, $args);

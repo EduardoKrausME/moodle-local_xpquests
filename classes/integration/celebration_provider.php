@@ -25,6 +25,9 @@
 namespace local_xpquests\integration;
 
 
+use stdClass;
+use Throwable;
+
 /**
  * Celebration provider.
  */
@@ -32,7 +35,7 @@ class celebration_provider {
     /**
      * Queue completed.
      */
-    public static function queue_completed(\stdClass $quest, \stdClass $progress): void {
+    public static function queue_completed(stdClass $quest, stdClass $progress): void {
         $class = '\\local_xpcelebration\\api';
         if (!class_exists($class) || !method_exists($class, 'queue')) {
             return;
@@ -46,7 +49,7 @@ class celebration_provider {
                 get_string('celebration_message', 'local_xpquests', format_string($quest->name)),
                 ['questid' => (int)$quest->id, 'progressid' => (int)$progress->id]
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             debugging('local_xpcelebration integration failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
     }

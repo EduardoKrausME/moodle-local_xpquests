@@ -22,13 +22,18 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use local_xpquests\event_step_type_interface;
+use mod_forum\event\post_created;
+use stdClass;
+use Throwable;
 
 /**
  * Forum post.
  */
-class forum_post extends base implements \local_xpquests\event_step_type_interface {
+class forum_post extends base implements event_step_type_interface {
     /**
      * Get name.
      */
@@ -51,7 +56,7 @@ class forum_post extends base implements \local_xpquests\event_step_type_interfa
     /**
      * Count posts.
      */
-    private function count_posts(int $userid, \stdClass $step, \stdClass $progress): int {
+    private function count_posts(int $userid, stdClass $step, stdClass $progress): int {
         global $DB;
         $config = $this->config($step);
         $cm = get_coursemodule_from_id('forum', (int)($config['cmid'] ?? 0), 0, false, IGNORE_MISSING);
@@ -74,7 +79,7 @@ class forum_post extends base implements \local_xpquests\event_step_type_interfa
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool {
         $config = $this->config($step);
         return $this->count_posts($userid, $step, $progress) >= max(1, (int)($config['minposts'] ?? 1));
     }
@@ -82,7 +87,7 @@ class forum_post extends base implements \local_xpquests\event_step_type_interfa
     /**
      * Get progress.
      */
-    public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
+    public function get_progress(int $userid, stdClass $step, stdClass $progress): array {
         $config = $this->config($step);
         $target = max(1, (int)($config['minposts'] ?? 1));
         $current = $this->count_posts($userid, $step, $progress);
@@ -93,13 +98,13 @@ class forum_post extends base implements \local_xpquests\event_step_type_interfa
      * Supports event.
      */
     public function supports_event(\core\event\base $event): bool {
-        return $event instanceof \mod_forum\event\post_created;
+        return $event instanceof post_created;
     }
 
     /**
      * Matches event.
      */
-    public function matches_event(\core\event\base $event, \stdClass $step): bool {
+    public function matches_event(\core\event\base $event, stdClass $step): bool {
         $config = $this->config($step);
         return $this->supports_event($event)
             && (int)$event->contextinstanceid === (int)($config['cmid'] ?? 0);
@@ -110,9 +115,9 @@ class forum_post extends base implements \local_xpquests\event_step_type_interfa
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int $userid,
-        \stdClass $step,
-        \stdClass $progress
+        int              $userid,
+        stdClass         $step,
+        stdClass         $progress
     ): bool {
         $config = $this->config($step);
         return $this->supports_event($event)
@@ -124,13 +129,13 @@ class forum_post extends base implements \local_xpquests\event_step_type_interfa
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string {
+    public function get_description(stdClass $step): string {
         $config = $this->config($step);
         try {
             $cm = $this->get_cminfo((int)($config['cmid'] ?? 0));
             $a = (object)['name' => $cm->name, 'count' => max(1, (int)($config['minposts'] ?? 1))];
             return get_string('stepdesc_forum_post', 'local_xpquests', $a);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return get_string('step_activity_missing', 'local_xpquests');
         }
     }

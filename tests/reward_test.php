@@ -24,15 +24,21 @@
 
 namespace local_xpquests;
 
+use advanced_testcase;
+use local_xpquests\integration\credit_provider_interface;
+use local_xpquests\integration\xp_provider_interface;
+use local_xpquests\service\reward_manager;
+
 defined('MOODLE_INTERNAL') || die;
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses -- Test doubles share this testcase file.
+
 /**
  * Reward tests.
  *
  * @covers \local_xpquests\service\reward_manager
  */
-final class reward_test extends \advanced_testcase {
+final class reward_test extends advanced_testcase {
     /**
      * Test xp and credits are delivered once.
      */
@@ -76,7 +82,7 @@ final class reward_test extends \advanced_testcase {
 
         $xp = new reward_fake_xp_provider();
         $credits = new reward_fake_credit_provider();
-        $manager = new \local_xpquests\service\reward_manager($xp, $credits);
+        $manager = new reward_manager($xp, $credits);
         $manager->deliver($quest, $progress);
         $manager->deliver($quest, $progress);
 
@@ -93,19 +99,21 @@ final class reward_test extends \advanced_testcase {
 /**
  * Reward fake xp provider.
  */
-class reward_fake_xp_provider implements \local_xpquests\integration\xp_provider_interface {
+class reward_fake_xp_provider implements xp_provider_interface {
     /**
      * Awards.
      *
      * @var mixed
      */
     public $awards = 0;
+
     /**
      * Award.
      */
     public function award(int $userid, int $courseid, int $amount, string $reference): void {
         $this->awards++;
     }
+
     /**
      * Get total.
      */
@@ -117,19 +125,21 @@ class reward_fake_xp_provider implements \local_xpquests\integration\xp_provider
 /**
  * Reward fake credit provider.
  */
-class reward_fake_credit_provider implements \local_xpquests\integration\credit_provider_interface {
+class reward_fake_credit_provider implements credit_provider_interface {
     /**
      * Awards.
      *
      * @var mixed
      */
     public $awards = 0;
+
     /**
      * Is available.
      */
     public function is_available(): bool {
         return true;
     }
+
     /**
      * Add.
      */

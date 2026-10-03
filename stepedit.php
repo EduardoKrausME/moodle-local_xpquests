@@ -22,6 +22,9 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_xpquests\form\step_form;
+use local_xpquests\service\step_type_registry;
+
 require('../../config.php');
 
 $questid = required_param('questid', PARAM_INT);
@@ -38,7 +41,7 @@ $PAGE->set_context($context);
 $PAGE->set_title($id ? get_string('editstep', 'local_xpquests') : get_string('addstep', 'local_xpquests'));
 $PAGE->set_heading(format_string($quest->name));
 
-$form = new \local_xpquests\form\step_form(null, ['courseid' => $course->id]);
+$form = new step_form(null, ['courseid' => $course->id]);
 if ($step) {
     $defaults = clone $step;
     $config = json_decode($step->configjson ?: '{}', true) ?: [];
@@ -61,7 +64,7 @@ if ($data = $form->get_data()) {
         'amount' => isset($data->amount) ? (int)$data->amount : 0,
     ];
     try {
-        $type = \local_xpquests\service\step_type_registry::get($data->steptype);
+        $type = step_type_registry::get($data->steptype);
         $config = $type->validate_configuration($rawconfig, $course->id);
     } catch (Throwable $e) {
         throw new moodle_exception('invalidstepconfig', 'local_xpquests', '', null, $e->getMessage());
@@ -80,9 +83,9 @@ if ($data = $form->get_data()) {
         $DB->update_record('local_xpquests_steps', $record);
     } else {
         $record->sortorder = 10 + (int)$DB->get_field_sql(
-            'SELECT COALESCE(MAX(sortorder), 0) FROM {local_xpquests_steps} WHERE questid = :questid',
-            ['questid' => $questid]
-        );
+                'SELECT COALESCE(MAX(sortorder), 0) FROM {local_xpquests_steps} WHERE questid = :questid',
+                ['questid' => $questid]
+            );
         $record->timecreated = $now;
         $DB->insert_record('local_xpquests_steps', $record);
     }

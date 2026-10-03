@@ -25,10 +25,13 @@
 namespace local_xpquests\task;
 
 
+use core\task\scheduled_task;
+use local_xpquests\service\progress_manager;
+
 /**
  * Reconcile active quests.
  */
-class reconcile_active_quests extends \core\task\scheduled_task {
+class reconcile_active_quests extends scheduled_task {
     /**
      * Get name.
      */
@@ -41,7 +44,7 @@ class reconcile_active_quests extends \core\task\scheduled_task {
      */
     public function execute(): void {
         global $DB;
-        $manager = new \local_xpquests\service\progress_manager();
+        $manager = new progress_manager();
         $rs = $DB->get_recordset('local_xpquests_progress', ['status' => 'inprogress'], 'timemodified ASC');
         $processed = 0;
         foreach ($rs as $progress) {

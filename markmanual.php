@@ -22,6 +22,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_xpquests\api;
+
 require('../../config.php');
 
 $stepid = required_param('stepid', PARAM_INT);
@@ -35,5 +37,5 @@ require_login($course);
 $context = context_course::instance($course->id);
 require_capability('local/xpquests:markmanual', $context);
 
-\local_xpquests\api::mark_manual_step($stepid, $userid);
+api::mark_manual_step($stepid, $userid);
 redirect(new moodle_url('/local/xpquests/quest.php', ['id' => $quest->id, 'preview' => 1]));

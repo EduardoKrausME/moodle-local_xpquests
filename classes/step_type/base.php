@@ -22,17 +22,22 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use cm_info;
+use invalid_parameter_exception;
+use local_xpquests\step_type_interface;
+use stdClass;
 
 /**
  * Base.
  */
-abstract class base implements \local_xpquests\step_type_interface {
+abstract class base implements step_type_interface {
     /**
      * Config.
      */
-    protected function config(\stdClass $step): array {
+    protected function config(stdClass $step): array {
         if (empty($step->configjson)) {
             return [];
         }
@@ -47,7 +52,7 @@ abstract class base implements \local_xpquests\step_type_interface {
         global $DB;
         $cmid = isset($config['cmid']) ? (int)$config['cmid'] : 0;
         if (!$cmid || !$DB->record_exists('course_modules', ['id' => $cmid, 'course' => $courseid])) {
-            throw new \invalid_parameter_exception('Invalid course module for this quest step.');
+            throw new invalid_parameter_exception('Invalid course module for this quest step.');
         }
         return $cmid;
     }
@@ -55,7 +60,7 @@ abstract class base implements \local_xpquests\step_type_interface {
     /**
      * Get cminfo.
      */
-    protected function get_cminfo(int $cmid): \cm_info {
+    protected function get_cminfo(int $cmid): cm_info {
         $cm = get_coursemodule_from_id(null, $cmid, 0, false, MUST_EXIST);
         $modinfo = get_fast_modinfo($cm->course);
         return $modinfo->get_cm($cmid);
@@ -64,7 +69,7 @@ abstract class base implements \local_xpquests\step_type_interface {
     /**
      * Availability time.
      */
-    protected function availability_time(\stdClass $step, \stdClass $progress): int {
+    protected function availability_time(stdClass $step, stdClass $progress): int {
         global $DB;
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $step->questid], '*', MUST_EXIST);
         if (empty($quest->sequential)) {
@@ -89,7 +94,7 @@ abstract class base implements \local_xpquests\step_type_interface {
     /**
      * Get progress.
      */
-    public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
+    public function get_progress(int $userid, stdClass $step, stdClass $progress): array {
         $done = $this->is_completed($userid, $step, $progress);
         return ['current' => $done ? 1.0 : 0.0, 'target' => 1.0, 'completed' => $done];
     }

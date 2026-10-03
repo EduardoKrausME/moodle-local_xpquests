@@ -15,25 +15,30 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * classes/local/step_type/quiz_attempt.php for local_xpquests.
+ * classes/local/step_type/assignment_submission.php for local_xpquests.
  *
  * @package    local_xpquests
  * @copyright  2026 Eduardo Kraus {@link https://eduardokraus.com}
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use local_xpquests\event_step_type_interface;
+use mod_assign\event\assessable_submitted;
+use stdClass;
+use Throwable;
 
 /**
- * Quiz attempt.
+ * Assignment submission.
  */
-class quiz_attempt extends base implements \local_xpquests\event_step_type_interface {
+class assignment_submission extends base implements event_step_type_interface {
     /**
      * Get name.
      */
     public function get_name(): string {
-        return get_string('steptype_quiz_attempt', 'local_xpquests');
+        return get_string('steptype_assignment_submission', 'local_xpquests');
     }
 
     /**
@@ -41,24 +46,25 @@ class quiz_attempt extends base implements \local_xpquests\event_step_type_inter
      */
     public function validate_configuration(array $config, int $courseid): array {
         $cmid = $this->require_cmid($config, $courseid);
-        $cm = get_coursemodule_from_id('quiz', $cmid, $courseid, false, MUST_EXIST);
-        return ['cmid' => (int)$cm->id];
+        get_coursemodule_from_id('assign', $cmid, $courseid, false, MUST_EXIST);
+        return ['cmid' => $cmid];
     }
 
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool {
         global $DB;
         $config = $this->config($step);
-        $cm = get_coursemodule_from_id('quiz', (int)($config['cmid'] ?? 0), 0, false, IGNORE_MISSING);
+        $cm = get_coursemodule_from_id('assign', (int)($config['cmid'] ?? 0), 0, false, IGNORE_MISSING);
         if (!$cm) {
             return false;
         }
-        return $DB->record_exists_select('quiz_attempts',
-            'quiz = :quiz AND userid = :userid AND preview = 0 AND timefinish >= :mintime', [
-                'quiz' => $cm->instance,
+        return $DB->record_exists_select('assign_submission',
+            'assignment = :assignment AND userid = :userid AND latest = 1 AND status = :status AND timemodified >= :mintime', [
+                'assignment' => $cm->instance,
                 'userid' => $userid,
+                'status' => 'submitted',
                 'mintime' => $this->availability_time($step, $progress),
             ]);
     }
@@ -67,13 +73,13 @@ class quiz_attempt extends base implements \local_xpquests\event_step_type_inter
      * Supports event.
      */
     public function supports_event(\core\event\base $event): bool {
-        return $event instanceof \mod_quiz\event\attempt_submitted;
+        return $event instanceof assessable_submitted;
     }
 
     /**
      * Matches event.
      */
-    public function matches_event(\core\event\base $event, \stdClass $step): bool {
+    public function matches_event(\core\event\base $event, stdClass $step): bool {
         $config = $this->config($step);
         return $this->supports_event($event)
             && (int)$event->contextinstanceid === (int)($config['cmid'] ?? 0);
@@ -84,26 +90,27 @@ class quiz_attempt extends base implements \local_xpquests\event_step_type_inter
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int $userid,
-        \stdClass $step,
-        \stdClass $progress
+        int              $userid,
+        stdClass         $step,
+        stdClass         $progress
     ): bool {
         $config = $this->config($step);
+        $eventuserid = !empty($event->relateduserid) ? (int)$event->relateduserid : (int)$event->userid;
         return $this->supports_event($event)
             && (int)$event->contextinstanceid === (int)($config['cmid'] ?? 0)
-            && (int)$event->userid === $userid
-            && $event->timecreated >= $this->availability_time($step, $progress);
+            && $eventuserid === $userid
+            && $this->is_completed($userid, $step, $progress);
     }
 
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string {
+    public function get_description(stdClass $step): string {
         $config = $this->config($step);
         try {
             $cm = $this->get_cminfo((int)($config['cmid'] ?? 0));
-            return get_string('stepdesc_quiz_attempt', 'local_xpquests', $cm->name);
-        } catch (\Throwable $e) {
+            return get_string('stepdesc_assignment_submission', 'local_xpquests', $cm->name);
+        } catch (Throwable $e) {
             return get_string('step_activity_missing', 'local_xpquests');
         }
     }

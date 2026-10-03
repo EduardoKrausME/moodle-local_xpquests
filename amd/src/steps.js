@@ -1,4 +1,4 @@
-define(['core/notification'], function(Notification) {
+define(['core/notification'], function (Notification) {
     const init = (listId, sesskey) => {
         const list = document.getElementById(listId);
         if (!list) {

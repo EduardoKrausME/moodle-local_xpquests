@@ -25,6 +25,9 @@
 namespace local_xpquests\integration;
 
 
+use local_xpquests\event\quest_completed;
+use moodle_exception;
+
 /**
  * Personalxp provider.
  */
@@ -38,10 +41,10 @@ class personalxp_provider implements xp_provider_interface {
         }
         $class = '\\local_personalxp\\service\\xp_manager';
         if (!class_exists($class) || !method_exists($class, 'award')) {
-            throw new \moodle_exception('personalxpapiunavailable', 'local_xpquests');
+            throw new moodle_exception('personalxpapiunavailable', 'local_xpquests');
         }
         if (method_exists($class, 'is_enabled') && !$class::is_enabled()) {
-            throw new \moodle_exception('personalxpdisabled', 'local_xpquests');
+            throw new moodle_exception('personalxpdisabled', 'local_xpquests');
         }
 
         $objectid = self::reference_id($reference);
@@ -53,7 +56,7 @@ class personalxp_provider implements xp_provider_interface {
             $amount,
             get_string('xprewardlabel', 'local_xpquests'),
             'local_xpquests',
-            \local_xpquests\event\quest_completed::class
+            quest_completed::class
         );
     }
 

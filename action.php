@@ -45,9 +45,9 @@ if ($action === 'toggle') {
     $copy->name = get_string('copyof', 'local_xpquests', $quest->name);
     $copy->enabled = 0;
     $copy->sortorder = 10 + (int)$DB->get_field_sql(
-        'SELECT COALESCE(MAX(sortorder), 0) FROM {local_xpquests_quests} WHERE courseid = :courseid',
-        ['courseid' => $courseid]
-    );
+            'SELECT COALESCE(MAX(sortorder), 0) FROM {local_xpquests_quests} WHERE courseid = :courseid',
+            ['courseid' => $courseid]
+        );
     $copy->timecreated = time();
     $copy->timemodified = time();
     $newid = $DB->insert_record('local_xpquests_quests', $copy);

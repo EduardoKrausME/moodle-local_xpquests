@@ -25,10 +25,15 @@
 namespace local_xpquests\event;
 
 
+use context_course;
+use core\event\base;
+use moodle_url;
+use stdClass;
+
 /**
  * Quest started.
  */
-class quest_started extends \core\event\base {
+class quest_started extends base {
     /**
      * Init.
      */
@@ -41,9 +46,9 @@ class quest_started extends \core\event\base {
     /**
      * Create for progress.
      */
-    public static function create_for_progress(\stdClass $quest, \stdClass $progress): self {
+    public static function create_for_progress(stdClass $quest, stdClass $progress): self {
         return self::create([
-            'context' => \context_course::instance($quest->courseid),
+            'context' => context_course::instance($quest->courseid),
             'objectid' => $progress->id,
             'relateduserid' => $progress->userid,
             'other' => ['questid' => $quest->id, 'runnumber' => $progress->runnumber],
@@ -69,7 +74,7 @@ class quest_started extends \core\event\base {
     /**
      * Get url.
      */
-    public function get_url(): \moodle_url {
-        return new \moodle_url('/local/xpquests/quest.php', ['id' => $this->other['questid']]);
+    public function get_url(): moodle_url {
+        return new moodle_url('/local/xpquests/quest.php', ['id' => $this->other['questid']]);
     }
 }

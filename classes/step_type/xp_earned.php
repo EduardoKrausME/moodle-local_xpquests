@@ -22,8 +22,11 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use local_xpquests\integration\personalxp_provider;
+use stdClass;
 
 /**
  * Xp earned.
@@ -48,13 +51,13 @@ class xp_earned extends base {
      * Current total.
      */
     private function current_total(int $userid, int $courseid): int {
-        return \local_xpquests\integration\personalxp_provider::get_total_static($userid, $courseid);
+        return personalxp_provider::get_total_static($userid, $courseid);
     }
 
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool {
         $config = $this->config($step);
         $quest = $GLOBALS['DB']->get_record('local_xpquests_quests', ['id' => $step->questid], 'courseid', MUST_EXIST);
         return max(0, $this->current_total($userid, (int)$quest->courseid) - (int)$progress->startxp)
@@ -64,7 +67,7 @@ class xp_earned extends base {
     /**
      * Get progress.
      */
-    public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
+    public function get_progress(int $userid, stdClass $step, stdClass $progress): array {
         global $DB;
         $config = $this->config($step);
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $step->questid], 'courseid', MUST_EXIST);
@@ -76,7 +79,7 @@ class xp_earned extends base {
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string {
+    public function get_description(stdClass $step): string {
         $config = $this->config($step);
         return get_string('stepdesc_xp_earned', 'local_xpquests', max(1, (int)($config['amount'] ?? 1)));
     }

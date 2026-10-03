@@ -25,6 +25,8 @@
 namespace local_xpquests;
 
 
+use stdClass;
+
 /**
  * Step type interface.
  */
@@ -46,17 +48,17 @@ interface step_type_interface {
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool;
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool;
 
     /**
      * Get progress.
      *
      * @return array{current:float,target:float,completed:bool}
      */
-    public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array;
+    public function get_progress(int $userid, stdClass $step, stdClass $progress): array;
 
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string;
+    public function get_description(stdClass $step): string;
 }

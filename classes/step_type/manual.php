@@ -22,8 +22,10 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use stdClass;
 
 /**
  * Manual.
@@ -46,7 +48,7 @@ class manual extends base {
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool {
         global $DB;
         return $DB->record_exists('local_xpquests_step_progress', [
             'progressid' => $progress->id,
@@ -59,7 +61,7 @@ class manual extends base {
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string {
+    public function get_description(stdClass $step): string {
         return get_string('stepdesc_manual', 'local_xpquests');
     }
 }

@@ -25,30 +25,41 @@
 namespace local_xpquests\service;
 
 
+use core\lock\lock_config;
+use dml_write_exception;
+use local_xpquests\event\quest_completed;
+use local_xpquests\event\quest_started;
+use local_xpquests\event\quest_step_completed;
+use local_xpquests\integration\celebration_provider;
+use local_xpquests\integration\personalxp_provider;
+use local_xpquests\integration\xp_provider_interface;
+use stdClass;
+use Throwable;
+
 /**
  * Progress manager.
  */
 class progress_manager {
     /** @var reward_manager */
     private $rewards;
-    /** @var \local_xpquests\integration\xp_provider_interface */
+    /** @var xp_provider_interface */
     private $xp;
 
     /**
      * Create a new instance.
      */
     public function __construct(
-        ?reward_manager $rewards = null,
-        ?\local_xpquests\integration\xp_provider_interface $xp = null
+        ?reward_manager        $rewards = null,
+        ?xp_provider_interface $xp = null
     ) {
-        $this->xp = $xp ?: new \local_xpquests\integration\personalxp_provider();
+        $this->xp = $xp ?: new personalxp_provider();
         $this->rewards = $rewards ?: new reward_manager($this->xp);
     }
 
     /**
      * Quest is open.
      */
-    public static function quest_is_open(\stdClass $quest, ?int $time = null): bool {
+    public static function quest_is_open(stdClass $quest, ?int $time = null): bool {
         $time = $time ?: time();
         if (empty($quest->enabled)) {
             return false;
@@ -65,7 +76,7 @@ class progress_manager {
     /**
      * Get or create progress.
      */
-    public function get_or_create_progress(\stdClass $quest, int $userid): ?\stdClass {
+    public function get_or_create_progress(stdClass $quest, int $userid): ?stdClass {
         global $DB;
         $active = $DB->get_record('local_xpquests_progress', [
             'questid' => $quest->id,
@@ -103,7 +114,7 @@ class progress_manager {
             return null;
         }
 
-        $factory = \core\lock\lock_config::get_lock_factory('local_xpquests');
+        $factory = lock_config::get_lock_factory('local_xpquests');
         $lock = $factory->get_lock('start_' . $quest->id . '_' . $userid, 10);
         if (!$lock) {
             return null;
@@ -118,9 +129,9 @@ class progress_manager {
                 return $active;
             }
             $runnumber = 1 + (int)$DB->get_field_sql(
-                'SELECT COALESCE(MAX(runnumber), 0) FROM {local_xpquests_progress} WHERE questid = :q AND userid = :u',
-                ['q' => $quest->id, 'u' => $userid]
-            );
+                    'SELECT COALESCE(MAX(runnumber), 0) FROM {local_xpquests_progress} WHERE questid = :q AND userid = :u',
+                    ['q' => $quest->id, 'u' => $userid]
+                );
             $now = time();
             $progress = (object)[
                 'questid' => $quest->id,
@@ -135,7 +146,7 @@ class progress_manager {
                 'timemodified' => $now,
             ];
             $progress->id = $DB->insert_record('local_xpquests_progress', $progress);
-            \local_xpquests\event\quest_started::create_for_progress($quest, $progress)->trigger();
+            quest_started::create_for_progress($quest, $progress)->trigger();
             return $progress;
         } finally {
             $lock->release();
@@ -145,7 +156,7 @@ class progress_manager {
     /**
      * Is step available.
      */
-    public function is_step_available(\stdClass $quest, \stdClass $step, \stdClass $progress): bool {
+    public function is_step_available(stdClass $quest, stdClass $step, stdClass $progress): bool {
         global $DB;
         if (empty($quest->sequential)) {
             return true;
@@ -169,10 +180,10 @@ class progress_manager {
      * Mark step completed.
      */
     public function mark_step_completed(
-        \stdClass $quest,
-        \stdClass $step,
-        \stdClass $progress,
-        ?int $completedat = null
+        stdClass $quest,
+        stdClass $step,
+        stdClass $progress,
+        ?int     $completedat = null
     ): bool {
         global $DB;
         if ($progress->status !== 'inprogress') {
@@ -199,14 +210,14 @@ class progress_manager {
                 'completedat' => $now,
                 'timecreated' => $now,
             ]);
-        } catch (\dml_write_exception $e) {
+        } catch (dml_write_exception $e) {
             return false;
         }
 
         $progress->currentstep = (int)$step->sortorder;
         $progress->timemodified = $now;
         $DB->update_record('local_xpquests_progress', $progress);
-        \local_xpquests\event\quest_step_completed::create_for_step($quest, $step, $progress, $id)->trigger();
+        quest_step_completed::create_for_step($quest, $step, $progress, $id)->trigger();
         $this->complete_if_ready($quest, $progress);
         return true;
     }
@@ -214,13 +225,13 @@ class progress_manager {
     /**
      * Recalculate.
      */
-    public function recalculate(\stdClass $quest, \stdClass $progress): \stdClass {
+    public function recalculate(stdClass $quest, stdClass $progress): stdClass {
         global $DB;
         if ($progress->status !== 'inprogress') {
             if ($progress->status === 'completed') {
                 try {
                     $this->rewards->retry($quest, $progress);
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     debugging('XP Quest reward retry failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
                 }
             }
@@ -256,7 +267,7 @@ class progress_manager {
                         break;
                     }
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 debugging('XP Quest step recalculation failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
             }
         }
@@ -266,7 +277,7 @@ class progress_manager {
     /**
      * Complete if ready.
      */
-    public function complete_if_ready(\stdClass $quest, \stdClass $progress): bool {
+    public function complete_if_ready(stdClass $quest, stdClass $progress): bool {
         global $DB;
         $required = (int)$DB->count_records('local_xpquests_steps', [
             'questid' => $quest->id,
@@ -286,7 +297,7 @@ class progress_manager {
             return false;
         }
 
-        $factory = \core\lock\lock_config::get_lock_factory('local_xpquests');
+        $factory = lock_config::get_lock_factory('local_xpquests');
         $lock = $factory->get_lock('complete_' . $progress->id, 10);
         if (!$lock) {
             return false;
@@ -309,16 +320,16 @@ class progress_manager {
             $progress->timemodified = time();
             $DB->update_record('local_xpquests_progress', $progress);
 
-            \local_xpquests\event\quest_completed::create_for_progress($quest, $progress)->trigger();
+            quest_completed::create_for_progress($quest, $progress)->trigger();
             try {
                 $this->rewards->deliver($quest, $progress);
-            } catch (\Throwable $rewarderror) {
+            } catch (Throwable $rewarderror) {
                 // Completion is durable. The scheduled task retries the same idempotency reference.
                 debugging('XP Quest reward delivery queued for retry: ' . $rewarderror->getMessage(), DEBUG_DEVELOPER);
             }
-            \local_xpquests\integration\celebration_provider::queue_completed($quest, $progress);
+            celebration_provider::queue_completed($quest, $progress);
             return true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             debugging('XP Quest completion failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return false;
         } finally {
@@ -329,7 +340,7 @@ class progress_manager {
     /**
      * Summary.
      */
-    public function summary(\stdClass $quest, ?\stdClass $progress): array {
+    public function summary(stdClass $quest, ?stdClass $progress): array {
         global $DB;
         $steps = $DB->get_records('local_xpquests_steps', ['questid' => $quest->id], 'sortorder ASC, id ASC');
         $items = [];
@@ -355,7 +366,7 @@ class progress_manager {
             try {
                 $type = step_type_registry::get($step->steptype);
                 $description = $type->get_description($step);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $description = get_string('step_unavailable', 'local_xpquests');
             }
             // Page rendering reads our persisted progress only. Expensive state/history

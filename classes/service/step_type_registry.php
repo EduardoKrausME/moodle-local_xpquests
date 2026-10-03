@@ -25,6 +25,18 @@
 namespace local_xpquests\service;
 
 
+use coding_exception;
+use local_xpquests\step_type\activity_completion;
+use local_xpquests\step_type\activity_view;
+use local_xpquests\step_type\assignment_submission;
+use local_xpquests\step_type\course_section_completion;
+use local_xpquests\step_type\forum_post;
+use local_xpquests\step_type\manual;
+use local_xpquests\step_type\quiz_attempt;
+use local_xpquests\step_type\quiz_pass;
+use local_xpquests\step_type\xp_earned;
+use local_xpquests\step_type_interface;
+
 /**
  * Step type registry.
  */
@@ -34,15 +46,15 @@ class step_type_registry {
      */
     public static function get_map(): array {
         $types = [
-            'activity_view' => \local_xpquests\local\step_type\activity_view::class,
-            'activity_completion' => \local_xpquests\local\step_type\activity_completion::class,
-            'quiz_attempt' => \local_xpquests\local\step_type\quiz_attempt::class,
-            'quiz_pass' => \local_xpquests\local\step_type\quiz_pass::class,
-            'forum_post' => \local_xpquests\local\step_type\forum_post::class,
-            'assignment_submission' => \local_xpquests\local\step_type\assignment_submission::class,
-            'course_section_completion' => \local_xpquests\local\step_type\course_section_completion::class,
-            'xp_earned' => \local_xpquests\local\step_type\xp_earned::class,
-            'manual' => \local_xpquests\local\step_type\manual::class,
+            'activity_view' => activity_view::class,
+            'activity_completion' => activity_completion::class,
+            'quiz_attempt' => quiz_attempt::class,
+            'quiz_pass' => quiz_pass::class,
+            'forum_post' => forum_post::class,
+            'assignment_submission' => assignment_submission::class,
+            'course_section_completion' => course_section_completion::class,
+            'xp_earned' => xp_earned::class,
+            'manual' => manual::class,
         ];
 
         if (function_exists('get_plugins_with_function')) {
@@ -61,14 +73,14 @@ class step_type_registry {
     /**
      * Get.
      */
-    public static function get(string $type): \local_xpquests\step_type_interface {
+    public static function get(string $type): step_type_interface {
         $map = self::get_map();
         if (empty($map[$type]) || !class_exists($map[$type])) {
-            throw new \coding_exception('Unknown XP Quest step type: ' . $type);
+            throw new coding_exception('Unknown XP Quest step type: ' . $type);
         }
         $instance = new $map[$type]();
-        if (!$instance instanceof \local_xpquests\step_type_interface) {
-            throw new \coding_exception('Step type must implement step_type_interface: ' . $type);
+        if (!$instance instanceof step_type_interface) {
+            throw new coding_exception('Step type must implement step_type_interface: ' . $type);
         }
         return $instance;
     }

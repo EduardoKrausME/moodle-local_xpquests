@@ -33,6 +33,7 @@ interface xp_provider_interface {
      * Award.
      */
     public function award(int $userid, int $courseid, int $amount, string $reference): void;
+
     /**
      * Get total.
      */

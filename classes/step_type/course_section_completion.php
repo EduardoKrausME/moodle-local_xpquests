@@ -22,13 +22,18 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use core\event\course_module_completion_updated;
+use invalid_parameter_exception;
+use local_xpquests\event_step_type_interface;
+use stdClass;
 
 /**
  * Course section completion.
  */
-class course_section_completion extends base implements \local_xpquests\event_step_type_interface {
+class course_section_completion extends base implements event_step_type_interface {
     /**
      * Get name.
      */
@@ -43,7 +48,7 @@ class course_section_completion extends base implements \local_xpquests\event_st
         global $DB;
         $sectionnum = max(0, (int)($config['sectionnum'] ?? -1));
         if (!$DB->record_exists('course_sections', ['course' => $courseid, 'section' => $sectionnum])) {
-            throw new \invalid_parameter_exception('Invalid course section.');
+            throw new invalid_parameter_exception('Invalid course section.');
         }
         return ['sectionnum' => $sectionnum];
     }
@@ -51,7 +56,7 @@ class course_section_completion extends base implements \local_xpquests\event_st
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool {
         global $DB;
         $config = $this->config($step);
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $step->questid], 'courseid', MUST_EXIST);
@@ -90,7 +95,7 @@ class course_section_completion extends base implements \local_xpquests\event_st
     /**
      * Get progress.
      */
-    public function get_progress(int $userid, \stdClass $step, \stdClass $progress): array {
+    public function get_progress(int $userid, stdClass $step, stdClass $progress): array {
         global $DB;
         $config = $this->config($step);
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $step->questid], 'courseid', MUST_EXIST);
@@ -129,13 +134,13 @@ class course_section_completion extends base implements \local_xpquests\event_st
      * Supports event.
      */
     public function supports_event(\core\event\base $event): bool {
-        return $event instanceof \core\event\course_module_completion_updated;
+        return $event instanceof course_module_completion_updated;
     }
 
     /**
      * Matches event.
      */
-    public function matches_event(\core\event\base $event, \stdClass $step): bool {
+    public function matches_event(\core\event\base $event, stdClass $step): bool {
         global $DB;
         if (!$this->supports_event($event)) {
             return false;
@@ -154,9 +159,9 @@ class course_section_completion extends base implements \local_xpquests\event_st
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int $userid,
-        \stdClass $step,
-        \stdClass $progress
+        int              $userid,
+        stdClass         $step,
+        stdClass         $progress
     ): bool {
         return $this->supports_event($event)
             && (int)$event->relateduserid === $userid
@@ -166,7 +171,7 @@ class course_section_completion extends base implements \local_xpquests\event_st
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string {
+    public function get_description(stdClass $step): string {
         $config = $this->config($step);
         return get_string('stepdesc_course_section_completion', 'local_xpquests', (int)($config['sectionnum'] ?? 0));
     }

@@ -15,25 +15,30 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * classes/local/step_type/activity_completion.php for local_xpquests.
+ * classes/local/step_type/activity_view.php for local_xpquests.
  *
  * @package    local_xpquests
  * @copyright  2026 Eduardo Kraus {@link https://eduardokraus.com}
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_xpquests\local\step_type;
+namespace local_xpquests\step_type;
 
+
+use core\event\course_module_viewed;
+use local_xpquests\event_step_type_interface;
+use stdClass;
+use Throwable;
 
 /**
- * Activity completion.
+ * Activity view.
  */
-class activity_completion extends base implements \local_xpquests\event_step_type_interface {
+class activity_view extends base implements event_step_type_interface {
     /**
      * Get name.
      */
     public function get_name(): string {
-        return get_string('steptype_activity_completion', 'local_xpquests');
+        return get_string('steptype_activity_view', 'local_xpquests');
     }
 
     /**
@@ -46,30 +51,27 @@ class activity_completion extends base implements \local_xpquests\event_step_typ
     /**
      * Is completed.
      */
-    public function is_completed(int $userid, \stdClass $step, \stdClass $progress): bool {
+    public function is_completed(int $userid, stdClass $step, stdClass $progress): bool {
         global $DB;
-        $config = $this->config($step);
-        $cmid = (int)($config['cmid'] ?? 0);
-        if (!$cmid || !$DB->record_exists('course_modules', ['id' => $cmid])) {
-            return false;
-        }
-        $record = $DB->get_record('course_modules_completion', ['coursemoduleid' => $cmid, 'userid' => $userid]);
-        return $record
-            && (int)$record->completionstate !== COMPLETION_INCOMPLETE
-            && (int)$record->timemodified >= $this->availability_time($step, $progress);
+        return $DB->record_exists('local_xpquests_step_progress', [
+            'progressid' => $progress->id,
+            'stepid' => $step->id,
+            'userid' => $userid,
+            'status' => 'completed',
+        ]);
     }
 
     /**
      * Supports event.
      */
     public function supports_event(\core\event\base $event): bool {
-        return $event instanceof \core\event\course_module_completion_updated;
+        return $event instanceof course_module_viewed;
     }
 
     /**
      * Matches event.
      */
-    public function matches_event(\core\event\base $event, \stdClass $step): bool {
+    public function matches_event(\core\event\base $event, stdClass $step): bool {
         $config = $this->config($step);
         return $this->supports_event($event)
             && (int)$event->contextinstanceid === (int)($config['cmid'] ?? 0);
@@ -80,26 +82,26 @@ class activity_completion extends base implements \local_xpquests\event_step_typ
      */
     public function is_completed_by_event(
         \core\event\base $event,
-        int $userid,
-        \stdClass $step,
-        \stdClass $progress
+        int              $userid,
+        stdClass         $step,
+        stdClass         $progress
     ): bool {
         $config = $this->config($step);
         return $this->supports_event($event)
             && (int)$event->contextinstanceid === (int)($config['cmid'] ?? 0)
-            && (int)$event->relateduserid === $userid
-            && $this->is_completed($userid, $step, $progress);
+            && (int)$event->userid === $userid
+            && $event->timecreated >= $this->availability_time($step, $progress);
     }
 
     /**
      * Get description.
      */
-    public function get_description(\stdClass $step): string {
+    public function get_description(stdClass $step): string {
         $config = $this->config($step);
         try {
             $cm = $this->get_cminfo((int)($config['cmid'] ?? 0));
-            return get_string('stepdesc_activity_completion', 'local_xpquests', $cm->name);
-        } catch (\Throwable $e) {
+            return get_string('stepdesc_activity_view', 'local_xpquests', $cm->name);
+        } catch (Throwable $e) {
             return get_string('step_activity_missing', 'local_xpquests');
         }
     }

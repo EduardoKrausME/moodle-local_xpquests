@@ -22,6 +22,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_xpquests\api;
+
 require('../../config.php');
 
 $id = required_param('id', PARAM_INT);
@@ -43,9 +45,9 @@ $PAGE->set_title(format_string($quest->name));
 $PAGE->set_heading(format_string($course->fullname));
 
 if ($preview) {
-    $data = \local_xpquests\api::get_quest_progress($id, $USER->id, false);
+    $data = api::get_quest_progress($id, $USER->id, false);
 } else {
-    $data = \local_xpquests\api::get_quest_progress($id, $USER->id, true);
+    $data = api::get_quest_progress($id, $USER->id, true);
 }
 $data['backurl'] = (new moodle_url('/local/xpquests/index.php', ['courseid' => $course->id]))->out(false);
 $data['preview'] = (bool)$preview;

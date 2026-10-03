@@ -1,7 +1,8 @@
 <div class="xpq-detail">
     <div class="xpq-detail-header">
         <div>
-            {{#preview}}<div class="xpq-preview-label">{{#str}}preview, local_xpquests{{/str}}</div>{{/preview}}
+            {{#preview}}
+                <div class="xpq-preview-label">{{#str}}preview, local_xpquests{{/str}}</div>{{/preview}}
             <h2>{{name}}</h2>
             <div class="xpq-description">{{{description}}}</div>
         </div>
@@ -9,26 +10,31 @@
     </div>
 
     <div class="xpq-summary">
-        <div><strong>{{completedsteps}}</strong> {{#str}}of, local_xpquests{{/str}} <strong>{{requiredsteps}}</strong> {{#str}}requiredsteps, local_xpquests{{/str}}</div>
+        <div><strong>{{completedsteps}}</strong> {{#str}}of, local_xpquests{{/str}}
+            <strong>{{requiredsteps}}</strong> {{#str}}requiredsteps, local_xpquests{{/str}}</div>
         <div class="xpq-rewards">
             {{#hasxp}}<span>+{{rewardxp}} XP</span>{{/hasxp}}
             {{#hascredits}}<span>+{{rewardcredits}} {{#str}}credits, local_xpquests{{/str}}</span>{{/hascredits}}
         </div>
     </div>
-    <div class="xpq-progress xpq-progress-lg" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100">
+    <div class="xpq-progress xpq-progress-lg" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0"
+         aria-valuemax="100">
         <span style="width: {{percent}}%"></span>
     </div>
     <div class="xpq-percent">{{percent}}%</div>
 
-    {{#complete}}<div class="alert alert-success">{{#str}}questcompleted, local_xpquests{{/str}}</div>{{/complete}}
-    {{#expired}}<div class="alert alert-secondary">{{#str}}questexpired, local_xpquests{{/str}}</div>{{/expired}}
+    {{#complete}}
+        <div class="alert alert-success">{{#str}}questcompleted, local_xpquests{{/str}}</div>{{/complete}}
+    {{#expired}}
+        <div class="alert alert-secondary">{{#str}}questexpired, local_xpquests{{/str}}</div>{{/expired}}
 
     <div class="xpq-steps">
         {{#steps}}
             <div class="xpq-step {{#completed}}is-complete{{/completed}} {{#locked}}is-locked{{/locked}}">
                 <div class="xpq-step-icon">{{icon}}</div>
                 <div class="xpq-step-content">
-                    <div class="xpq-step-title">{{name}} {{#optional}}<span class="badge badge-light">{{optional_label}}</span>{{/optional}}</div>
+                    <div class="xpq-step-title">{{name}} {{#optional}}
+                        <span class="badge badge-light">{{optional_label}}</span>{{/optional}}</div>
                     <div class="xpq-step-description">{{description}}</div>
                     {{#progress}}
                         {{^completed}}

@@ -25,6 +25,12 @@
 namespace local_xpquests;
 
 
+use context_course;
+use invalid_parameter_exception;
+use local_xpquests\service\progress_manager;
+use moodle_exception;
+use stdClass;
+
 /**
  * Api.
  */
@@ -34,7 +40,7 @@ class api {
      */
     public static function get_available_quests(int $courseid, int $userid): array {
         global $DB;
-        $context = \context_course::instance($courseid);
+        $context = context_course::instance($courseid);
         if (!has_capability('local/xpquests:view', $context, $userid)) {
             return [];
         }
@@ -42,7 +48,7 @@ class api {
         $quests = $DB->get_records_select('local_xpquests_quests',
             'courseid = :courseid AND enabled = 1 AND (timestart = 0 OR timestart <= :now1) AND (timeend = 0 OR timeend >= :now2)',
             ['courseid' => $courseid, 'now1' => $now, 'now2' => $now], 'sortorder ASC, id ASC');
-        $manager = new \local_xpquests\service\progress_manager();
+        $manager = new progress_manager();
         $result = [];
         foreach ($quests as $quest) {
             $completed = (int)$DB->count_records('local_xpquests_progress', [
@@ -80,7 +86,7 @@ class api {
     public static function get_user_progress(int $courseid, int $userid): array {
         global $DB;
         $quests = $DB->get_records('local_xpquests_quests', ['courseid' => $courseid], 'sortorder ASC, id ASC');
-        $manager = new \local_xpquests\service\progress_manager();
+        $manager = new progress_manager();
         $result = [];
         foreach ($quests as $quest) {
             $progress = $DB->get_record_sql(
@@ -100,9 +106,9 @@ class api {
     public static function get_quest_progress(int $questid, int $userid, bool $start = false): array {
         global $DB;
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $questid], '*', MUST_EXIST);
-        $context = \context_course::instance($quest->courseid);
+        $context = context_course::instance($quest->courseid);
         require_capability('local/xpquests:view', $context, $userid);
-        $manager = new \local_xpquests\service\progress_manager();
+        $manager = new progress_manager();
         $progress = $DB->get_record('local_xpquests_progress', [
             'questid' => $questid,
             'userid' => $userid,
@@ -128,19 +134,19 @@ class api {
         global $DB, $USER;
         $step = $DB->get_record('local_xpquests_steps', ['id' => $stepid], '*', MUST_EXIST);
         if ($step->steptype !== 'manual') {
-            throw new \invalid_parameter_exception('Only manual steps can be marked manually.');
+            throw new invalid_parameter_exception('Only manual steps can be marked manually.');
         }
         $quest = $DB->get_record('local_xpquests_quests', ['id' => $step->questid], '*', MUST_EXIST);
-        $context = \context_course::instance($quest->courseid);
+        $context = context_course::instance($quest->courseid);
         require_capability('local/xpquests:markmanual', $context);
         if (!has_capability('local/xpquests:view', $context, $userid)) {
-            throw new \invalid_parameter_exception('The target user cannot participate in this quest.');
+            throw new invalid_parameter_exception('The target user cannot participate in this quest.');
         }
 
-        $manager = new \local_xpquests\service\progress_manager();
+        $manager = new progress_manager();
         $progress = $manager->get_or_create_progress($quest, $userid);
         if (!$progress || $progress->status !== 'inprogress') {
-            throw new \moodle_exception('questnotactive', 'local_xpquests');
+            throw new moodle_exception('questnotactive', 'local_xpquests');
         }
         $manager->mark_step_completed($quest, $step, $progress);
         return self::get_quest_progress($quest->id, $userid, false);
@@ -160,7 +166,7 @@ class api {
         if (!$progress) {
             return self::get_quest_progress($questid, $userid, false);
         }
-        $manager = new \local_xpquests\service\progress_manager();
+        $manager = new progress_manager();
         $manager->recalculate($quest, $progress);
         return self::get_quest_progress($questid, $userid, false);
     }
@@ -168,7 +174,7 @@ class api {
     /**
      * Quest to array.
      */
-    private static function quest_to_array(\stdClass $quest, array $summary, int $completioncount): array {
+    private static function quest_to_array(stdClass $quest, array $summary, int $completioncount): array {
         return [
             'id' => (int)$quest->id,
             'courseid' => (int)$quest->courseid,
