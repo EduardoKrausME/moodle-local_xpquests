@@ -23,6 +23,14 @@
  */
 
 
+/**
+ * Adds quest links to the course navigation.
+ *
+ * @param navigation_node $navigation Course navigation node.
+ * @param stdClass $course Course record.
+ * @param context_course $context Course context.
+ * @return void
+ */
 function local_xpquests_extend_navigation_course(navigation_node $navigation, stdClass $course, context_course $context): void {
     if (has_capability('local/xpquests:view', $context)) {
         $navigation->add(

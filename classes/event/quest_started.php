@@ -61,7 +61,9 @@ class quest_started extends \core\event\base {
      * Get description.
      */
     public function get_description(): string {
-        return "The user with id '{$this->relateduserid}' started quest '{$this->other['questid']}' "\n            . "run '{$this->other['runnumber']}'.";
+        return "The user with id '{$this->relateduserid}' "
+            . "started quest '{$this->other['questid']}' "
+            . "run '{$this->other['runnumber']}'.";
     }
 
     /**

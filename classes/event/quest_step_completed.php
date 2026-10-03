@@ -70,7 +70,9 @@ class quest_step_completed extends \core\event\base {
      * Get description.
      */
     public function get_description(): string {
-        return "The user with id '{$this->relateduserid}' completed step '{$this->other['stepid']}' "\n            . "in quest '{$this->other['questid']}'.";
+        return "The user with id '{$this->relateduserid}' "
+            . "completed step '{$this->other['stepid']}' "
+            . "in quest '{$this->other['questid']}'.";
     }
 
     /**

@@ -27,6 +27,8 @@ namespace local_xpquests;
 
 /**
  * Manual tests.
+ *
+ * @covers \\local_xpquests\\api
  */
 final class manual_test extends \advanced_testcase {
     /**

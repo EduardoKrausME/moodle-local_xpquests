@@ -38,11 +38,15 @@ $PAGE->set_heading(format_string($course->fullname));
 $records = $DB->get_records('local_xpquests_quests', ['courseid' => $courseid], 'sortorder ASC, id ASC');
 $quests = [];
 foreach ($records as $quest) {
+    $mode = get_string('mode_anyorder', 'local_xpquests');
+    if (!empty($quest->sequential)) {
+        $mode = get_string('mode_sequential', 'local_xpquests');
+    }
     $quests[] = [
         'id' => $quest->id,
         'name' => format_string($quest->name),
         'enabled' => !empty($quest->enabled),
-        'mode' => $quest->sequential\n            ? get_string('mode_sequential', 'local_xpquests')\n            : get_string('mode_anyorder', 'local_xpquests'),
+        'mode' => $mode,
         'steps' => $DB->count_records('local_xpquests_steps', ['questid' => $quest->id]),
         'rewardxp' => (int)$quest->rewardxp,
         'rewardcredits' => (int)$quest->rewardcredits,

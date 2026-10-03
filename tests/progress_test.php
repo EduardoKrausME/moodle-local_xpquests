@@ -24,11 +24,13 @@
 
 namespace local_xpquests;
 
-
+defined('MOODLE_INTERNAL') || die();
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses -- Test doubles share this testcase file.
 /**
  * Progress tests.
+ *
+ * @covers \\local_xpquests\\service\\progress_manager
  */
 final class progress_test extends \advanced_testcase {
     /**

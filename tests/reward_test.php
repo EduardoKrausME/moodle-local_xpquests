@@ -24,11 +24,13 @@
 
 namespace local_xpquests;
 
-
+defined('MOODLE_INTERNAL') || die();
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses -- Test doubles share this testcase file.
 /**
  * Reward tests.
+ *
+ * @covers \\local_xpquests\\service\\reward_manager
  */
 final class reward_test extends \advanced_testcase {
     /**
@@ -81,7 +83,10 @@ final class reward_test extends \advanced_testcase {
         $this->assertEquals(1, $xp->awards);
         $this->assertEquals(1, $credits->awards);
         $this->assertEquals(2, $DB->count_records('local_xpquests_rewards', ['progressid' => $progress->id]));
-        $this->assertEquals(2, $DB->count_records('local_xpquests_rewards', [\n            'progressid' => $progress->id,\n            'status' => 'delivered',\n        ]));
+        $this->assertEquals(2, $DB->count_records('local_xpquests_rewards', [
+            'progressid' => $progress->id,
+            'status' => 'delivered',
+        ]));
     }
 }
 
