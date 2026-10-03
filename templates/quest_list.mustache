@@ -1,0 +1,32 @@
+<div class="local-xpquests-list">
+    {{#empty}}
+        <div class="alert alert-info">{{#str}}noquestsavailable, local_xpquests{{/str}}</div>
+    {{/empty}}
+    <div class="row">
+        {{#quests}}
+            <div class="col-12 col-lg-6 mb-4">
+                <a class="xpq-card" href="{{{url}}}">
+                    {{#image}}<img class="xpq-card-image" src="{{{image}}}" alt="">{{/image}}
+                    <div class="xpq-card-body">
+                        <div class="xpq-card-topline">
+                            <span class="xpq-status">{{statuslabel}}</span>
+                            <span>{{completedsteps}}/{{requiredsteps}}</span>
+                        </div>
+                        <h3>{{name}}</h3>
+                        <div class="xpq-description">{{{description}}}</div>
+                        <div class="xpq-progress" role="progressbar" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100">
+                            <span style="width: {{percent}}%"></span>
+                        </div>
+                        <div class="xpq-card-footer">
+                            <strong>{{percent}}%</strong>
+                            <div class="xpq-rewards">
+                                {{#hasxp}}<span>+{{rewardxp}} XP</span>{{/hasxp}}
+                                {{#hascredits}}<span>+{{rewardcredits}} {{#str}}credits, local_xpquests{{/str}}</span>{{/hascredits}}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {{/quests}}
+    </div>
+</div>
