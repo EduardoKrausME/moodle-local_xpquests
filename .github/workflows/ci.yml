@@ -56,27 +56,6 @@ jobs:
         ref: master
         path: extra-plugins/personalxp
 
-    - name: Check out Quiz
-      uses: actions/checkout@v4
-      with:
-        repository: EduardoKrausME/moodle-mod_quiz
-        ref: master
-        path: extra-plugins/quiz
-
-    - name: Check out Forum
-      uses: actions/checkout@v4
-      with:
-        repository: EduardoKrausME/moodle-mod_forum
-        ref: master
-        path: extra-plugins/forum
-
-    - name: Check out Assign
-      uses: actions/checkout@v4
-      with:
-        repository: EduardoKrausME/moodle-mod_assign
-        ref: master
-        path: extra-plugins/assign
-
     - name: Setup PHP ${{ matrix.config.php }}
       uses: shivammathur/setup-php@v2
       with:
