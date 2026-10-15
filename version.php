@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 $plugin->version = 2026101500;
 $plugin->release = '1.0.4';
 $plugin->component = 'local_xpquests';
-$plugin->requires = 2022112800; // Moodle 4.1.
+$plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = [
     'local_personalxp' => ANY_VERSION,
